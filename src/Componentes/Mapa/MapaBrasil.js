@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
-import 'leaflet/dist/leaflet.css';
+
 import estadosGeoJson from './GeoJSON/estadosBrasil.json';
-import './MapaBrasil.css';
+;
 import L from 'leaflet';
 
 const centroDoBrasil = [-15.78, -47.93];
