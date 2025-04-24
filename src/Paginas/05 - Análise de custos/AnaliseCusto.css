@@ -1,0 +1,153 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400&display=swap');
+
+.content-area {
+  flex: 1;
+  padding: 0;
+  margin: 0;
+  height: 100vh;
+  overflow-y: auto; /* permite rolagem vertical */
+}
+
+.analise-container {
+  padding: 32px 40px;
+  overflow-x: auto; /* permite rolagem horizontal se necessário */
+  min-height: 100%;
+  box-sizing: border-box;
+}
+
+.analise-container h2 {
+  font-size: 20px;
+  font-weight: 400;
+  margin-bottom: 16px;
+  color: #111827;
+}
+
+.upload-label {
+  display: inline-block;
+  background-color: #2563eb;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  margin-bottom: 16px;
+  transition: background-color 0.3s ease;
+  font-weight: 400;
+}
+
+.upload-label:hover {
+  background-color: #1e40af;
+}
+
+.upload-input {
+  display: none;
+}
+
+.tabela-analise {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-size: 12px;
+  background-color: #f9fafb;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.tabela-analise th,
+.tabela-analise td {
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+  font-weight: 400;
+}
+
+.tabela-analise th {
+  background-color: #f1f5f9;
+  font-size: 12px;
+  color: #374151;
+}
+
+.linha-erro {
+  background-color: #ffeaea;
+}
+
+.caixa-financeiro {
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  margin-bottom: 20px;
+  padding: 16px;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.caixa-financeiro:hover {
+  background-color: #f3f4f6;
+}
+
+.cabecalho-caixa {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: #111827;
+  margin-bottom: 10px;
+}
+
+.status-vermelho {
+  color: #ef4444;
+}
+
+.status-verde {
+  color: #10b981;
+}
+
+.detalhes-devolutiva {
+  margin-top: 10px;
+  padding-left: 8px;
+}
+
+.itens-devolutiva {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.item-box {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+}
+
+.item-box p {
+  margin: 4px 0;
+  font-size: 13px;
+  color: #374151;
+}
+
+.cabecalho-analise {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.btn-enviar-devolutiva {
+  padding: 8px 16px;
+  font-size: 13px;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 400;
+  transition: background-color 0.2s ease;
+}
+
+.btn-enviar-devolutiva:hover {
+  background-color: #1e40af;
+}

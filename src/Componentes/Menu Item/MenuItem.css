@@ -1,0 +1,35 @@
+.menu-item {
+    font-size: 13px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    background: none;
+    border: none;
+    color: #eaeaea;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    text-align: left;
+    font-weight: 300;
+    width: 100%;
+  }
+  
+  .menu-item:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+  }
+  
+  .menu-item.active {
+    background-color: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+    position: relative;
+  }
+  
+  .menu-item.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 1px;
+    bottom: 1px;
+    width: 2px;
+    border-radius: 1px;
+    background-color: #ffffff;
+  }
+  

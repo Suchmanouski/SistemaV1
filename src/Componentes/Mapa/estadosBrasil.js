@@ -1,0 +1,32 @@
+const estadosBrasil = [
+    { nome: "Acre", sigla: "AC", coordenadas: [-70.55, -9.02] },
+    { nome: "Alagoas", sigla: "AL", coordenadas: [-36.55, -9.62] },
+    { nome: "Amapá", sigla: "AP", coordenadas: [-51.77, 1.41] },
+    { nome: "Amazonas", sigla: "AM", coordenadas: [-63.90, -3.47] },
+    { nome: "Bahia", sigla: "BA", coordenadas: [-41.28, -12.97] },
+    { nome: "Ceará", sigla: "CE", coordenadas: [-39.29, -5.20] },
+    { nome: "Distrito Federal", sigla: "DF", coordenadas: [-47.92, -15.78] },
+    { nome: "Espírito Santo", sigla: "ES", coordenadas: [-40.34, -19.19] },
+    { nome: "Goiás", sigla: "GO", coordenadas: [-49.31, -15.93] },
+    { nome: "Maranhão", sigla: "MA", coordenadas: [-45.27, -5.42] },
+    { nome: "Mato Grosso", sigla: "MT", coordenadas: [-56.10, -12.64] },
+    { nome: "Mato Grosso do Sul", sigla: "MS", coordenadas: [-54.54, -20.51] },
+    { nome: "Minas Gerais", sigla: "MG", coordenadas: [-44.38, -18.10] },
+    { nome: "Pará", sigla: "PA", coordenadas: [-52.00, -4.87] },
+    { nome: "Paraíba", sigla: "PB", coordenadas: [-36.72, -7.12] },
+    { nome: "Paraná", sigla: "PR", coordenadas: [-51.19, -24.89] },
+    { nome: "Pernambuco", sigla: "PE", coordenadas: [-36.95, -8.28] },
+    { nome: "Piauí", sigla: "PI", coordenadas: [-42.28, -8.28] },
+    { nome: "Rio de Janeiro", sigla: "RJ", coordenadas: [-43.20, -22.91] },
+    { nome: "Rio Grande do Norte", sigla: "RN", coordenadas: [-36.52, -5.79] },
+    { nome: "Rio Grande do Sul", sigla: "RS", coordenadas: [-52.97, -30.01] },
+    { nome: "Rondônia", sigla: "RO", coordenadas: [-63.58, -11.22] },
+    { nome: "Roraima", sigla: "RR", coordenadas: [-61.22, 2.82] },
+    { nome: "Santa Catarina", sigla: "SC", coordenadas: [-49.44, -27.33] },
+    { nome: "São Paulo", sigla: "SP", coordenadas: [-46.63, -23.55] },
+    { nome: "Sergipe", sigla: "SE", coordenadas: [-37.07, -10.57] },
+    { nome: "Tocantins", sigla: "TO", coordenadas: [-48.29, -10.25] },
+  ];
+  
+  export default estadosBrasil;
+  
