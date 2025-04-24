@@ -7,10 +7,8 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^13.5.0",
-    "leaflet": "^1.9.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-leaflet": "^5.0.0",
     "react-router-dom": "^7.5.1",
     "react-scripts": "5.0.1",
     "react-simple-maps": "^3.0.0",
@@ -18,11 +16,11 @@
     "xlsx": "^0.18.5"
   },
   "scripts": {
-  "start": "react-scripts start",
-  "build": "react-scripts build",
-  "install": "npm install --legacy-peer-deps",
-  "postinstall": "npm run build"
-},
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "install": "npm install --legacy-peer-deps",
+    "postinstall": "npm run build"
+  },
   "eslintConfig": {
     "extends": [
       "react-app",
