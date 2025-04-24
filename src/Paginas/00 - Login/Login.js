@@ -23,7 +23,7 @@ function Login({ onLoginSuccess }) {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    fetch('https://sistema-v1-backend.onrender.com/login', {
+    fetch('https://sistema-v1-backend.onrender.com', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ nome, senha }),
