@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './Contratos.css';
-import MapaBrasil from '../../Componentes/Mapa/MapaBrasil';
+
 
 function Contratos() {
   const [contratos, setContratos] = useState(() => {
@@ -106,12 +106,7 @@ function Contratos() {
           ))}
         </div>
 
-        <div className="mapa-quadrado">
-          <MapaBrasil
-            onEstadoSelecionado={setFiltroEstado}
-            contratos={contratos}
-          />
-        </div>
+        
       </div>
 
       {contratoSelecionado && (
