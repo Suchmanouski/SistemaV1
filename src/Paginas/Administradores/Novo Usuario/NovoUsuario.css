@@ -1,0 +1,61 @@
+.novo-usuario-page {
+    display: flex;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+    background: #f6f6f6;
+  }
+  
+  .novo-usuario-container {
+    margin: auto;
+    background: white;
+    padding: 40px;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .novo-usuario-container h2 {
+    text-align: center;
+    margin-bottom: 24px;
+    font-weight: 400;
+  }
+  
+  .novo-usuario-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .novo-usuario-form input,
+  .novo-usuario-form select {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    background: #fff;
+    outline-color: #59c5f5;
+  }
+  
+  .novo-usuario-form button {
+    background: #56b8f9;
+    color: white;
+    padding: 12px;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s ease-in-out;
+  }
+  
+  .novo-usuario-form button:hover {
+    background: #0bd5fc;
+  }
+  
+  .mensagem-usuario {
+    margin-top: 12px;
+    font-size: 14px;
+    color: green;
+    text-align: center;
+  }
+  

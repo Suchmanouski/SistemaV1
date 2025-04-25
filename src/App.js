@@ -9,12 +9,15 @@ function App() {
   });
 
   const handleLoginSuccess = (usuario) => {
+    // Salva o usuário e o token no localStorage
     localStorage.setItem('usuarioLogado', JSON.stringify(usuario));
+    localStorage.setItem('token', usuario.token);
     setUsuarioLogado(usuario);
   };
 
   const handleLogout = () => {
     localStorage.removeItem('usuarioLogado');
+    localStorage.removeItem('token');
     setUsuarioLogado(null);
   };
 
@@ -23,7 +26,11 @@ function App() {
   }
 
   return (
-    <Pagina01 usuarioLogado={usuarioLogado} onLogout={handleLogout} />
+    <Pagina01
+      usuarioLogado={usuarioLogado}
+      token={localStorage.getItem('token')}
+      onLogout={handleLogout}
+    />
   );
 }
 
