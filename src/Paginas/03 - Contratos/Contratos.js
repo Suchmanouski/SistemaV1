@@ -1,13 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Contratos.css';
 
-
 function Contratos() {
-  const [contratos, setContratos] = useState(() => {
-    const contratosSalvos = localStorage.getItem('contratos');
-    return contratosSalvos ? JSON.parse(contratosSalvos) : [];
-  });
-
+  const [contratos, setContratos] = useState([]);
   const [filtroEstado, setFiltroEstado] = useState('');
   const [busca, setBusca] = useState('');
   const [contratoSelecionado, setContratoSelecionado] = useState(null);
@@ -26,6 +21,22 @@ function Contratos() {
     tipo: ''
   });
 
+  // Carrega contratos da API ao montar
+  useEffect(() => {
+    fetch('/api/contratos', { credentials: 'include' })
+      .then(res => {
+        if (!res.ok) throw new Error('Falha ao buscar contratos');
+        return res.json();
+      })
+      .then(data => setContratos(data))
+      .catch(err => {
+        console.error(err);
+        // fallback localStorage
+        const saved = localStorage.getItem('contratos');
+        setContratos(saved ? JSON.parse(saved) : []);
+      });
+  }, []);
+
   const contratosFiltrados = contratos.filter((contrato) => {
     const passaFiltroEstado = filtroEstado
       ? contrato.estado?.toLowerCase() === filtroEstado.toLowerCase()
@@ -35,17 +46,38 @@ function Contratos() {
   });
 
   const handleSalvar = () => {
-    const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado')) || { nome: 'Desconhecido' };
-    const novoContrato = {
-      ...formulario,
-      criador: usuarioLogado.nome,
-      dataCriacao: new Date().toLocaleString()
-    };
-    const novaLista = [...contratos, novoContrato];
-    setContratos(novaLista);
-    localStorage.setItem('contratos', JSON.stringify(novaLista));
-    setFormularioAberto(false);
-    resetarFormulario();
+    // tenta salvar no servidor
+    fetch('/api/contratos', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formulario)
+    })
+      .then(res => {
+        if (!res.ok) throw new Error('Erro ao criar contrato');
+        return fetch('/api/contratos', { credentials: 'include' });
+      })
+      .then(res => res.json())
+      .then(data => {
+        setContratos(data);
+      })
+      .catch(err => {
+        console.error(err);
+        // fallback localStorage
+        const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado')) || { nome: 'Desconhecido' };
+        const novoContrato = {
+          ...formulario,
+          criador: usuarioLogado.nome,
+          dataCriacao: new Date().toLocaleString()
+        };
+        const novaLista = [...contratos, novoContrato];
+        setContratos(novaLista);
+        localStorage.setItem('contratos', JSON.stringify(novaLista));
+      })
+      .finally(() => {
+        setFormularioAberto(false);
+        resetarFormulario();
+      });
   };
 
   const cancelarFormulario = () => {
@@ -105,8 +137,6 @@ function Contratos() {
             </div>
           ))}
         </div>
-
-        
       </div>
 
       {contratoSelecionado && (
