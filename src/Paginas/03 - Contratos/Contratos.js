@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import './Contratos.css';
 
-
-function Contratos() {
+function Contratos({ usuarioLogado }) {
   const [contratos, setContratos] = useState(() => {
     const contratosSalvos = localStorage.getItem('contratos');
     return contratosSalvos ? JSON.parse(contratosSalvos) : [];
@@ -73,6 +72,11 @@ function Contratos() {
     setFormulario({ ...formulario, [e.target.name]: e.target.value });
   };
 
+  const handleExcluir = (id) => {
+    setContratos(contratos.filter((contrato) => contrato.id !== id));
+    localStorage.setItem('contratos', JSON.stringify(contratos.filter((contrato) => contrato.id !== id)));
+  };
+
   return (
     <div className="pagina-contratos">
       <div className="barra-contratos-v2">
@@ -85,9 +89,12 @@ function Contratos() {
             value={busca}
             onChange={(e) => setBusca(e.target.value)}
           />
-          <button className="btn-novo-contrato" onClick={() => setFormularioAberto(true)}>
-            + Novo Contrato
-          </button>
+          {/* Botão de Adicionar Contrato apenas visível para Administradores */}
+          {usuarioLogado.tipo_usuario === 'admin' && (
+            <button className="btn-novo-contrato" onClick={() => setFormularioAberto(true)}>
+              + Novo Contrato
+            </button>
+          )}
         </div>
       </div>
 
@@ -100,15 +107,21 @@ function Contratos() {
                 Criado por {contrato.criador} em {contrato.dataCriacao}
               </div>
               <div className="acoes-card">
+                {/* Exibir ações apenas para Administradores */}
+                {usuarioLogado.tipo_usuario === 'admin' && (
+                  <div>
+                    <button className="btn-editar">Editar</button>
+                    <button className="btn-excluir" onClick={() => handleExcluir(contrato.id)}>Excluir</button>
+                  </div>
+                )}
                 <button onClick={() => setContratoSelecionado(contrato)}>Visualizar</button>
               </div>
             </div>
           ))}
         </div>
-
-        
       </div>
 
+      {/* Modal de Detalhes do Contrato */}
       {contratoSelecionado && (
         <div className="modal-overlay" onClick={() => setContratoSelecionado(null)}>
           <div className="modal-contrato" onClick={(e) => e.stopPropagation()}>
@@ -121,6 +134,7 @@ function Contratos() {
         </div>
       )}
 
+      {/* Formulário de Novo Contrato */}
       {formularioAberto && (
         <div className="modal-overlay" onClick={cancelarFormulario}>
           <div className="modal-contrato" onClick={(e) => e.stopPropagation()}>
