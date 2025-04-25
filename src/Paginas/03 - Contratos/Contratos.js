@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Contratos.css';
 
-function Contratos({ usuarioLogado }) {
+function Contratos() {
   const [contratos, setContratos] = useState(() => {
     const contratosSalvos = localStorage.getItem('contratos');
     return contratosSalvos ? JSON.parse(contratosSalvos) : [];
@@ -25,6 +25,8 @@ function Contratos({ usuarioLogado }) {
     tipo: ''
   });
 
+  const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado')) || { tipo_usuario: '' };
+
   const contratosFiltrados = contratos.filter((contrato) => {
     const passaFiltroEstado = filtroEstado
       ? contrato.estado?.toLowerCase() === filtroEstado.toLowerCase()
@@ -34,10 +36,9 @@ function Contratos({ usuarioLogado }) {
   });
 
   const handleSalvar = () => {
-    const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado')) || { nome: 'Desconhecido' };
     const novoContrato = {
       ...formulario,
-      criador: usuarioLogado.nome,
+      criador: usuarioLogado.nome || 'Desconhecido',
       dataCriacao: new Date().toLocaleString()
     };
     const novaLista = [...contratos, novoContrato];
