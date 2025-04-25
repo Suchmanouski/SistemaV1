@@ -3,21 +3,21 @@ import Login from './Paginas/00 - Login/Login';
 import Pagina01 from './Paginas/01 - Página Incial/Inicio';
 
 function App() {
-  // Tenta carregar o usuário salvo no localStorage
+  // Tenta carregar o usuário salvo na sessionStorage
   const [usuarioLogado, setUsuarioLogado] = useState(() => {
-    const saved = localStorage.getItem('usuarioLogado');
+    const saved = sessionStorage.getItem('usuarioLogado');
     return saved ? JSON.parse(saved) : null;
   });
 
   // Callback para quando o login for bem-sucedido
   const handleLoginSuccess = (data) => {
-    localStorage.setItem('usuarioLogado', JSON.stringify(data));
+    sessionStorage.setItem('usuarioLogado', JSON.stringify(data));
     setUsuarioLogado(data);
   };
 
-  // Função de logout limpa o localStorage e o state
+  // Função de logout limpa a sessionStorage e o state
   const handleLogout = () => {
-    localStorage.removeItem('usuarioLogado');
+    sessionStorage.removeItem('usuarioLogado');
     setUsuarioLogado(null);
   };
 
