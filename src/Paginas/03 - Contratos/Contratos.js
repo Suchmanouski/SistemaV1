@@ -23,22 +23,15 @@ function Contratos() {
   });
 
   const API_BASE = 'https://sistema-v1-backend.onrender.com';
+  const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado')) || {};
 
   const carregarContratos = () => {
     fetch(`${API_BASE}/api/contratos`, { credentials: 'include' })
       .then(res => {
         if (!res.ok) throw new Error(`Status ${res.status}`);
-        return res.text();
+        return res.json();
       })
-      .then(text => {
-        try {
-          const data = text ? JSON.parse(text) : [];
-          setContratos(data);
-        } catch (err) {
-          console.error('Erro parsing JSON:', err);
-          setContratos([]);
-        }
-      })
+      .then(data => setContratos(data))
       .catch(err => console.error('Erro ao buscar contratos:', err));
   };
 
@@ -46,27 +39,19 @@ function Contratos() {
     carregarContratos();
   }, []);
 
-  const contratosFiltrados = contratos.filter(contrato => {
-    const passaFiltroEstado = filtroEstado
-      ? contrato.estado?.toLowerCase() === filtroEstado.toLowerCase()
-      : true;
-    const passaBusca = contrato.numero?.toLowerCase().includes(busca.toLowerCase());
-    return passaFiltroEstado && passaBusca;
-  });
-
-  const formatarData = (data) => {
-    if (!data) return null;
-    const [dia, mes, ano] = data.split('/');
+  const formatarData = dataString => {
+    if (!dataString) return null;
+    const [dia, mes, ano] = dataString.split('/');
     return `${ano}-${mes}-${dia}`;
   };
 
-  const formatarValor = (valor) => {
-    if (!valor) return null;
-    return parseFloat(valor.replace(/\./g, '').replace(',', '.'));
+  const formatarValor = valorString => {
+    if (!valorString) return null;
+    return parseFloat(valorString.replace(/\./g, '').replace(',', '.'));
   };
 
   const handleSalvar = () => {
-    const contratoFormatado = {
+    const payload = {
       ...formulario,
       dataInicio: formatarData(formulario.dataInicio),
       dataFim: formatarData(formulario.dataFim),
@@ -77,7 +62,7 @@ function Contratos() {
       method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(contratoFormatado)
+      body: JSON.stringify(payload)
     })
       .then(res => {
         if (!res.ok) throw new Error(`Status ${res.status}`);
@@ -97,7 +82,7 @@ function Contratos() {
       });
   };
 
-  const handleExcluir = (id) => {
+  const handleExcluir = id => {
     fetch(`${API_BASE}/api/contratos/${id}`, {
       method: 'DELETE',
       credentials: 'include'
@@ -140,6 +125,26 @@ function Contratos() {
     setFormulario({ ...formulario, [e.target.name]: e.target.value });
   };
 
+  // Filtra conforme tipo de usuário
+  const contratosFiltrados = contratos.filter(ctr => {
+    const passaBusca = ctr.numero.toLowerCase().includes(busca.toLowerCase());
+    const passaEstado = filtroEstado
+      ? ctr.estado?.toLowerCase() === filtroEstado.toLowerCase()
+      : true;
+
+    if (usuarioLogado.tipo_usuario === 'admin' || usuarioLogado.tipo_usuario === 'financeiro') {
+      return passaBusca && passaEstado;
+    }
+    if (usuarioLogado.tipo_usuario === 'coordenador') {
+      return (
+        ctr.numero.toString() === usuarioLogado.contrato.toString() &&
+        passaBusca &&
+        passaEstado
+      );
+    }
+    return false;
+  });
+
   return (
     <div className="pagina-contratos">
       <div className="barra-contratos-v2">
@@ -158,23 +163,21 @@ function Contratos() {
         </div>
       </div>
 
-      {mensagemSucesso && (
-        <div className="mensagem-sucesso">
-          {mensagemSucesso}
-        </div>
-      )}
+      {mensagemSucesso && <div className="mensagem-sucesso">{mensagemSucesso}</div>}
 
       <div className="conteudo-contratos">
         <div className="lista-contratos">
-          {contratosFiltrados.map((contrato) => (
-            <div className="contrato-card" key={contrato.id}>
-              <strong>{contrato.numero}</strong> – {contrato.contratante}
+          {contratosFiltrados.map(ctr => (
+            <div className="contrato-card" key={ctr.id}>
+              <strong>{ctr.numero}</strong> – {ctr.contratante}
               <div className="info-criador">
-                Criado por {contrato.criador} em {contrato.data_criacao || contrato.dataCriacao}
+                Criado por {ctr.criador} em {ctr.data_criacao?.split('T')[0]}
               </div>
               <div className="acoes-card">
-                <button onClick={() => setContratoSelecionado(contrato)}>Visualizar</button>
-                <button className="btn-excluir" onClick={() => handleExcluir(contrato.id)}>Excluir</button>
+                <button onClick={() => setContratoSelecionado(ctr)}>Visualizar</button>
+                <button className="btn-excluir" onClick={() => handleExcluir(ctr.id)}>
+                  Excluir
+                </button>
               </div>
             </div>
           ))}
@@ -186,9 +189,13 @@ function Contratos() {
           <div className="modal-contrato" onClick={e => e.stopPropagation()}>
             <h3>Detalhes do Contrato</h3>
             {Object.entries(contratoSelecionado).map(([key, value]) => (
-              <p key={key}><strong>{key}:</strong> {value}</p>
+              <p key={key}>
+                <strong>{key}:</strong> {value}
+              </p>
             ))}
-            <button className="fechar-modal" onClick={() => setContratoSelecionado(null)}>Fechar</button>
+            <button className="fechar-modal" onClick={() => setContratoSelecionado(null)}>
+              Fechar
+            </button>
           </div>
         </div>
       )}
@@ -210,8 +217,12 @@ function Contratos() {
                 </div>
               ))}
               <div className="botoes-formulario">
-                <button className="btn-salvar" onClick={handleSalvar}>Salvar</button>
-                <button className="fechar-modal" onClick={cancelarFormulario}>Cancelar</button>
+                <button className="btn-salvar" onClick={handleSalvar}>
+                  Salvar
+                </button>
+                <button className="fechar-modal" onClick={cancelarFormulario}>
+                  Cancelar
+                </button>
               </div>
             </div>
           </div>
