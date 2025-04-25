@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'; // Atualizado para React Router v6
-import Login from './Paginas/00 - Login/Teste'; // Seu componente de Login
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'; // React Router v6
+import Login from './Paginas/00 - Login/Teste'; // Componente de Login
 import Pagina01 from './Paginas/01 - Página Incial/Inicio'; // Página inicial após o login
 
 function App() {
@@ -9,7 +9,8 @@ function App() {
     return user ? JSON.parse(user) : null;
   });
 
-  const handleLoginSuccess = (usuario) => {
+  const handleLoginSuccess = (resposta) => {
+    const usuario = resposta.usuario; // Extrai o objeto 'usuario' da resposta do backend
     localStorage.setItem('usuarioLogado', JSON.stringify(usuario));
     setUsuarioLogado(usuario);
   };
@@ -22,13 +23,31 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* Caso o usuário não esteja logado, redireciona para o login */}
-        <Route path="/login" element={usuarioLogado ? <Navigate to="/inicio" /> : <Login onLoginSuccess={handleLoginSuccess} />} />
+        {/* Redireciona para /inicio se estiver logado, senão mostra a tela de login */}
+        <Route
+          path="/login"
+          element={
+            usuarioLogado ? (
+              <Navigate to="/inicio" />
+            ) : (
+              <Login onLoginSuccess={handleLoginSuccess} />
+            )
+          }
+        />
 
-        {/* Se o usuário estiver logado, redireciona para a página inicial */}
-        <Route path="/inicio" element={usuarioLogado ? <Pagina01 usuarioLogado={usuarioLogado} onLogout={handleLogout} /> : <Navigate to="/login" />} />
+        {/* Página inicial se logado, senão redireciona para login */}
+        <Route
+          path="/inicio"
+          element={
+            usuarioLogado ? (
+              <Pagina01 usuarioLogado={usuarioLogado} onLogout={handleLogout} />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
 
-        {/* Redirecionamento caso o usuário tente acessar uma rota não existente */}
+        {/* Rota raiz redireciona para login */}
         <Route path="/" element={<Navigate to="/login" />} />
       </Routes>
     </Router>
