@@ -107,8 +107,3 @@
 .user-area button:hover {
   background: rgba(255, 255, 255, 0.25);
 }
-/* Apenas para leve diferenciação visual de botões administrativos */
-.menu-item.admin {
-  font-style: italic;
-  opacity: 0.95;
-}

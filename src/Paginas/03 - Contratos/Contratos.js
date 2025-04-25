@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './Contratos.css';
+import MapaBrasil from '../../Componentes/Mapa/MapaBrasil';
 
 function Contratos() {
   const [contratos, setContratos] = useState(() => {
@@ -25,8 +26,6 @@ function Contratos() {
     tipo: ''
   });
 
-  const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado')) || { tipo_usuario: '' };
-
   const contratosFiltrados = contratos.filter((contrato) => {
     const passaFiltroEstado = filtroEstado
       ? contrato.estado?.toLowerCase() === filtroEstado.toLowerCase()
@@ -36,9 +35,10 @@ function Contratos() {
   });
 
   const handleSalvar = () => {
+    const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado')) || { nome: 'Desconhecido' };
     const novoContrato = {
       ...formulario,
-      criador: usuarioLogado.nome || 'Desconhecido',
+      criador: usuarioLogado.nome,
       dataCriacao: new Date().toLocaleString()
     };
     const novaLista = [...contratos, novoContrato];
@@ -73,11 +73,6 @@ function Contratos() {
     setFormulario({ ...formulario, [e.target.name]: e.target.value });
   };
 
-  const handleExcluir = (id) => {
-    setContratos(contratos.filter((contrato) => contrato.id !== id));
-    localStorage.setItem('contratos', JSON.stringify(contratos.filter((contrato) => contrato.id !== id)));
-  };
-
   return (
     <div className="pagina-contratos">
       <div className="barra-contratos-v2">
@@ -90,12 +85,9 @@ function Contratos() {
             value={busca}
             onChange={(e) => setBusca(e.target.value)}
           />
-          {/* Botão de Adicionar Contrato apenas visível para Administradores */}
-          {usuarioLogado.tipo_usuario === 'admin' && (
-            <button className="btn-novo-contrato" onClick={() => setFormularioAberto(true)}>
-              + Novo Contrato
-            </button>
-          )}
+          <button className="btn-novo-contrato" onClick={() => setFormularioAberto(true)}>
+            + Novo Contrato
+          </button>
         </div>
       </div>
 
@@ -108,21 +100,20 @@ function Contratos() {
                 Criado por {contrato.criador} em {contrato.dataCriacao}
               </div>
               <div className="acoes-card">
-                {/* Exibir ações apenas para Administradores */}
-                {usuarioLogado.tipo_usuario === 'admin' && (
-                  <div>
-                    <button className="btn-editar">Editar</button>
-                    <button className="btn-excluir" onClick={() => handleExcluir(contrato.id)}>Excluir</button>
-                  </div>
-                )}
                 <button onClick={() => setContratoSelecionado(contrato)}>Visualizar</button>
               </div>
             </div>
           ))}
         </div>
+
+        <div className="mapa-quadrado">
+          <MapaBrasil
+            onEstadoSelecionado={setFiltroEstado}
+            contratos={contratos}
+          />
+        </div>
       </div>
 
-      {/* Modal de Detalhes do Contrato */}
       {contratoSelecionado && (
         <div className="modal-overlay" onClick={() => setContratoSelecionado(null)}>
           <div className="modal-contrato" onClick={(e) => e.stopPropagation()}>
@@ -135,7 +126,6 @@ function Contratos() {
         </div>
       )}
 
-      {/* Formulário de Novo Contrato */}
       {formularioAberto && (
         <div className="modal-overlay" onClick={cancelarFormulario}>
           <div className="modal-contrato" onClick={(e) => e.stopPropagation()}>

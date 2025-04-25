@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Login from './Paginas/00 - Login/Teste';
+import React, { useState } from 'react';
+import Login from './Paginas/00 - Login/Login';
 import Pagina01 from './Paginas/01 - Página Incial/Inicio';
 
 function App() {
@@ -9,8 +8,7 @@ function App() {
     return user ? JSON.parse(user) : null;
   });
 
-  const handleLoginSuccess = (resposta) => {
-    const usuario = resposta.usuario; // <- Corrigido aqui
+  const handleLoginSuccess = (usuario) => {
     localStorage.setItem('usuarioLogado', JSON.stringify(usuario));
     setUsuarioLogado(usuario);
   };
@@ -20,32 +18,12 @@ function App() {
     setUsuarioLogado(null);
   };
 
+  if (!usuarioLogado) {
+    return <Login onLoginSuccess={handleLoginSuccess} />;
+  }
+
   return (
-    <Router>
-      <Routes>
-        <Route
-          path="/login"
-          element={
-            usuarioLogado ? (
-              <Navigate to="/inicio" />
-            ) : (
-              <Login onLoginSuccess={handleLoginSuccess} />
-            )
-          }
-        />
-        <Route
-          path="/inicio"
-          element={
-            usuarioLogado ? (
-              <Pagina01 usuarioLogado={usuarioLogado} onLogout={handleLogout} />
-            ) : (
-              <Navigate to="/login" />
-            )
-          }
-        />
-        <Route path="/" element={<Navigate to="/login" />} />
-      </Routes>
-    </Router>
+    <Pagina01 usuarioLogado={usuarioLogado} onLogout={handleLogout} />
   );
 }
 
