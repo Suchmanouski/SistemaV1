@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'; // React Router v6
-import Login from './Paginas/00 - Login/Teste'; // Componente de Login
-import Pagina01 from './Paginas/01 - Página Incial/Inicio'; // Página inicial após o login
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Login from './Paginas/00 - Login/Teste';
+import Pagina01 from './Paginas/01 - Página Incial/Inicio';
 
 function App() {
   const [usuarioLogado, setUsuarioLogado] = useState(() => {
@@ -10,7 +10,7 @@ function App() {
   });
 
   const handleLoginSuccess = (resposta) => {
-    const usuario = resposta.usuario; // Extrai o objeto 'usuario' da resposta do backend
+    const usuario = resposta.usuario; // <- Corrigido aqui
     localStorage.setItem('usuarioLogado', JSON.stringify(usuario));
     setUsuarioLogado(usuario);
   };
@@ -23,7 +23,6 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* Redireciona para /inicio se estiver logado, senão mostra a tela de login */}
         <Route
           path="/login"
           element={
@@ -34,8 +33,6 @@ function App() {
             )
           }
         />
-
-        {/* Página inicial se logado, senão redireciona para login */}
         <Route
           path="/inicio"
           element={
@@ -46,8 +43,6 @@ function App() {
             )
           }
         />
-
-        {/* Rota raiz redireciona para login */}
         <Route path="/" element={<Navigate to="/login" />} />
       </Routes>
     </Router>
