@@ -3,9 +3,9 @@ import './Inicio.css';
 import Contratos from '../03 - Contratos/Contratos';
 import Previsões from '../04 - Previsões/Previsões';
 import AnaliseCusto from '../05 - Análise de custos/AnaliseCusto';
-import NovoUsuario from '../Admin/NovoUsuario/NovoUsuario';
-import NovoContrato from '../Admin/NovoContrato/NovoContrato';
-import QuemLogou from '../Admin/QuemLogou/QuemLogou';
+import NovoUsuario from '../Admin/Novo Usuario/NovoUsuario';
+import NovoContrato from '../Admin/Novo Contrato/NovoContrato';
+import QuemLogou from '../Admin/Quem Logou/QuemLogou';
 import MenuLateral from '../../Componentes/Menu Lateral/Menu';
 
 function Pagina01({ usuarioLogado, token, onLogout }) {
