@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'; // Atualizado para React Router v6
-import Login from './Paginas/00 - Login/Login'; // Seu componente de Login
+import Login from './Paginas/00 - Login/login'; // Seu componente de Login
 import Pagina01 from './Paginas/01 - Página Incial/Inicio'; // Página inicial após o login
 
 function App() {
