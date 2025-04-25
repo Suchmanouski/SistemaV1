@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Teste.css';
-import logo from '../../Imagens/logo.jpg';
+import logo from '../../Imagens/logo.png';
 import fundo1 from '../../Imagens/1.jpg';
 import fundo2 from '../../Imagens/2.jpg';
 import fundo3 from '../../Imagens/3.jpg';
