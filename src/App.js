@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'; // Atualizado para React Router v6
 import Login from './Paginas/00 - Login/Login'; // Seu componente de Login
 import Pagina01 from './Paginas/01 - Página Incial/Inicio'; // Página inicial após o login
 
@@ -21,22 +21,16 @@ function App() {
 
   return (
     <Router>
-      <Switch>
+      <Routes>
         {/* Caso o usuário não esteja logado, redireciona para o login */}
-        <Route path="/login">
-          {usuarioLogado ? <Redirect to="/inicio" /> : <Login onLoginSuccess={handleLoginSuccess} />}
-        </Route>
+        <Route path="/login" element={usuarioLogado ? <Navigate to="/inicio" /> : <Login onLoginSuccess={handleLoginSuccess} />} />
 
         {/* Se o usuário estiver logado, redireciona para a página inicial */}
-        <Route path="/inicio">
-          {usuarioLogado ? <Pagina01 usuarioLogado={usuarioLogado} onLogout={handleLogout} /> : <Redirect to="/login" />}
-        </Route>
+        <Route path="/inicio" element={usuarioLogado ? <Pagina01 usuarioLogado={usuarioLogado} onLogout={handleLogout} /> : <Navigate to="/login" />} />
 
         {/* Redirecionamento caso o usuário tente acessar uma rota não existente */}
-        <Route path="/">
-          <Redirect to="/login" />
-        </Route>
-      </Switch>
+        <Route path="/" element={<Navigate to="/login" />} />
+      </Routes>
     </Router>
   );
 }
