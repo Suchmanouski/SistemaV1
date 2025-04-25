@@ -1,6 +1,6 @@
 import React from 'react';
 import './Menu.css';
-import logo from '../../Imagens/logo2.png';
+import logo from '../../Imagens/logo.png';
 import MenuItem from '../Menu Item/MenuItem';
 
 function MenuLateral({ paginaAtual, setPaginaAtual, usuarioLogado, onLogout }) {
