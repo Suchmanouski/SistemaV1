@@ -125,7 +125,6 @@ function Contratos() {
     setFormulario({ ...formulario, [e.target.name]: e.target.value });
   };
 
-  // Filtra conforme tipo de usuário
   const contratosFiltrados = contratos.filter(ctr => {
     const passaBusca = ctr.numero.toLowerCase().includes(busca.toLowerCase());
     const passaEstado = filtroEstado
@@ -157,9 +156,14 @@ function Contratos() {
             value={busca}
             onChange={e => setBusca(e.target.value)}
           />
-          <button className="btn-novo-contrato" onClick={() => setFormularioAberto(true)}>
-            + Novo Contrato
-          </button>
+          {usuarioLogado.tipo_usuario !== 'coordenador' && (
+            <button
+              className="btn-novo-contrato"
+              onClick={() => setFormularioAberto(true)}
+            >
+              + Novo Contrato
+            </button>
+          )}
         </div>
       </div>
 
@@ -174,10 +178,17 @@ function Contratos() {
                 Criado por {ctr.criador} em {ctr.data_criacao?.split('T')[0]}
               </div>
               <div className="acoes-card">
-                <button onClick={() => setContratoSelecionado(ctr)}>Visualizar</button>
-                <button className="btn-excluir" onClick={() => handleExcluir(ctr.id)}>
-                  Excluir
+                <button onClick={() => setContratoSelecionado(ctr)}>
+                  Visualizar
                 </button>
+                {usuarioLogado.tipo_usuario !== 'coordenador' && (
+                  <button
+                    className="btn-excluir"
+                    onClick={() => handleExcluir(ctr.id)}
+                  >
+                    Excluir
+                  </button>
+                )}
               </div>
             </div>
           ))}
@@ -193,7 +204,10 @@ function Contratos() {
                 <strong>{key}:</strong> {value}
               </p>
             ))}
-            <button className="fechar-modal" onClick={() => setContratoSelecionado(null)}>
+            <button
+              className="fechar-modal"
+              onClick={() => setContratoSelecionado(null)}
+            >
               Fechar
             </button>
           </div>
