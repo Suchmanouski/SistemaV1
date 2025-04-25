@@ -57,21 +57,63 @@ function Contratos() {
   const formatarData = (data) => {
     if (!data) return null;
     const [dia, mes, ano] = data.split('/');
-    return `${ano}-${mes}-${dia}`; // fica no formato YYYY-MM-DD
+    return `${ano}-${mes}-${dia}`;
   };
-  
-  const contratoParaSalvar = {
-    ...formulario,
-    dataInicio: formatarData(formulario.dataInicio),
-    dataFim: formatarData(formulario.dataFim)
+
+  const formatarValor = (valor) => {
+    if (!valor) return null;
+    return parseFloat(valor.replace(/\./g, '').replace(',', '.'));
   };
-  
-  fetch(`${API_BASE}/api/contratos`, {
-    method: 'POST',
-    credentials: 'include',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(contratoParaSalvar)
-  })
+
+  const handleSalvar = () => {
+    const contratoFormatado = {
+      ...formulario,
+      dataInicio: formatarData(formulario.dataInicio),
+      dataFim: formatarData(formulario.dataFim),
+      valorInicial: formatarValor(formulario.valorInicial)
+    };
+
+    fetch(`${API_BASE}/api/contratos`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(contratoFormatado)
+    })
+      .then(res => {
+        if (!res.ok) throw new Error(`Status ${res.status}`);
+        return res.json();
+      })
+      .then(() => {
+        carregarContratos();
+        setFormularioAberto(false);
+        resetarFormulario();
+        setMensagemSucesso('✅ Contrato adicionado com sucesso!');
+        setTimeout(() => setMensagemSucesso(''), 3000);
+      })
+      .catch(err => {
+        console.error('Erro ao salvar contrato:', err);
+        setMensagemSucesso('❌ Erro ao salvar contrato.');
+        setTimeout(() => setMensagemSucesso(''), 3000);
+      });
+  };
+
+  const handleExcluir = (id) => {
+    fetch(`${API_BASE}/api/contratos/${id}`, {
+      method: 'DELETE',
+      credentials: 'include'
+    })
+      .then(res => {
+        if (!res.ok) throw new Error(`Status ${res.status}`);
+        carregarContratos();
+        setMensagemSucesso('✅ Contrato excluído com sucesso!');
+        setTimeout(() => setMensagemSucesso(''), 3000);
+      })
+      .catch(err => {
+        console.error('Erro ao excluir contrato:', err);
+        setMensagemSucesso('❌ Erro ao excluir contrato.');
+        setTimeout(() => setMensagemSucesso(''), 3000);
+      });
+  };
 
   const cancelarFormulario = () => {
     setFormularioAberto(false);
@@ -124,14 +166,15 @@ function Contratos() {
 
       <div className="conteudo-contratos">
         <div className="lista-contratos">
-          {contratosFiltrados.map((contrato, index) => (
-            <div className="contrato-card" key={index}>
+          {contratosFiltrados.map((contrato) => (
+            <div className="contrato-card" key={contrato.id}>
               <strong>{contrato.numero}</strong> – {contrato.contratante}
               <div className="info-criador">
                 Criado por {contrato.criador} em {contrato.data_criacao || contrato.dataCriacao}
               </div>
               <div className="acoes-card">
                 <button onClick={() => setContratoSelecionado(contrato)}>Visualizar</button>
+                <button className="btn-excluir" onClick={() => handleExcluir(contrato.id)}>Excluir</button>
               </div>
             </div>
           ))}
