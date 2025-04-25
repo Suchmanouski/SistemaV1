@@ -21,59 +21,58 @@ function Contratos() {
     tipo: ''
   });
 
-  // Carrega contratos da API ao montar
+  const API_BASE = 'https://sistema-v1-backend.onrender.com';
+
   useEffect(() => {
-    fetch('/api/contratos', { credentials: 'include' })
+    fetch(`${API_BASE}/api/contratos`, { credentials: 'include' })
       .then(res => {
-        if (!res.ok) throw new Error('Falha ao buscar contratos');
-        return res.json();
+        if (!res.ok) throw new Error(`Status ${res.status}`);
+        return res.text();
       })
-      .then(data => setContratos(data))
-      .catch(err => {
-        console.error(err);
-        // fallback localStorage
-        const saved = localStorage.getItem('contratos');
-        setContratos(saved ? JSON.parse(saved) : []);
-      });
+      .then(text => {
+        try {
+          const data = text ? JSON.parse(text) : [];
+          setContratos(data);
+        } catch (err) {
+          console.error('Erro parsing JSON:', err);
+          setContratos([]);
+        }
+      })
+      .catch(err => console.error('Erro ao buscar contratos:', err));
   }, []);
 
-  const contratosFiltrados = contratos.filter((contrato) => {
+  const contratosFiltrados = contratos.filter(contrato => {
     const passaFiltroEstado = filtroEstado
       ? contrato.estado?.toLowerCase() === filtroEstado.toLowerCase()
       : true;
-    const passaBusca = contrato.numero.toLowerCase().includes(busca.toLowerCase());
+    const passaBusca = contrato.numero?.toLowerCase().includes(busca.toLowerCase());
     return passaFiltroEstado && passaBusca;
   });
 
   const handleSalvar = () => {
-    // tenta salvar no servidor
-    fetch('/api/contratos', {
+    fetch(`${API_BASE}/api/contratos`, {
       method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formulario)
     })
       .then(res => {
-        if (!res.ok) throw new Error('Erro ao criar contrato');
-        return fetch('/api/contratos', { credentials: 'include' });
+        if (!res.ok) throw new Error(`Status ${res.status}`);
+        return fetch(`${API_BASE}/api/contratos`, { credentials: 'include' });
       })
-      .then(res => res.json())
-      .then(data => {
-        setContratos(data);
+      .then(res => {
+        if (!res.ok) throw new Error(`Status ${res.status}`);
+        return res.text();
       })
-      .catch(err => {
-        console.error(err);
-        // fallback localStorage
-        const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado')) || { nome: 'Desconhecido' };
-        const novoContrato = {
-          ...formulario,
-          criador: usuarioLogado.nome,
-          dataCriacao: new Date().toLocaleString()
-        };
-        const novaLista = [...contratos, novoContrato];
-        setContratos(novaLista);
-        localStorage.setItem('contratos', JSON.stringify(novaLista));
+      .then(text => {
+        try {
+          const data = text ? JSON.parse(text) : [];
+          setContratos(data);
+        } catch (err) {
+          console.error('Erro parsing JSON pós-inserção:', err);
+        }
       })
+      .catch(err => console.error('Erro ao salvar contrato:', err))
       .finally(() => {
         setFormularioAberto(false);
         resetarFormulario();
@@ -101,7 +100,7 @@ function Contratos() {
     });
   };
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     setFormulario({ ...formulario, [e.target.name]: e.target.value });
   };
 
@@ -115,7 +114,7 @@ function Contratos() {
             placeholder="Buscar por número do contrato..."
             className="campo-busca-contrato"
             value={busca}
-            onChange={(e) => setBusca(e.target.value)}
+            onChange={e => setBusca(e.target.value)}
           />
           <button className="btn-novo-contrato" onClick={() => setFormularioAberto(true)}>
             + Novo Contrato
@@ -129,7 +128,7 @@ function Contratos() {
             <div className="contrato-card" key={index}>
               <strong>{contrato.numero}</strong> – {contrato.contratante}
               <div className="info-criador">
-                Criado por {contrato.criador} em {contrato.dataCriacao}
+                Criado por {contrato.criador} em {contrato.data_criacao || contrato.dataCriacao}
               </div>
               <div className="acoes-card">
                 <button onClick={() => setContratoSelecionado(contrato)}>Visualizar</button>
@@ -141,7 +140,7 @@ function Contratos() {
 
       {contratoSelecionado && (
         <div className="modal-overlay" onClick={() => setContratoSelecionado(null)}>
-          <div className="modal-contrato" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-contrato" onClick={e => e.stopPropagation()}>
             <h3>Detalhes do Contrato</h3>
             {Object.entries(contratoSelecionado).map(([key, value]) => (
               <p key={key}><strong>{key}:</strong> {value}</p>
@@ -153,10 +152,10 @@ function Contratos() {
 
       {formularioAberto && (
         <div className="modal-overlay" onClick={cancelarFormulario}>
-          <div className="modal-contrato" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-contrato" onClick={e => e.stopPropagation()}>
             <h3>Novo Contrato</h3>
             <div className="formulario-grid">
-              {Object.keys(formulario).map((campo) => (
+              {Object.keys(formulario).map(campo => (
                 <div key={campo} className="form-group">
                   <label>{campo}</label>
                   <input
