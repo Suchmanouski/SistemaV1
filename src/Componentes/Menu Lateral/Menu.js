@@ -2,7 +2,7 @@ import React from 'react';
 import './Menu.css';
 import logo from '../../Imagens/logo2.png';
 import MenuItem from '../Menu Item/MenuItem';
- 
+
 function MenuLateral({ paginaAtual, setPaginaAtual, usuarioLogado, onLogout }) {
   return (
     <aside className="sidebar">
@@ -10,6 +10,7 @@ function MenuLateral({ paginaAtual, setPaginaAtual, usuarioLogado, onLogout }) {
         <img src={logo} alt="Logo" className="logo" />
         <p className="boas-vindas">Bem-vindo, {usuarioLogado.nome}</p>
       </div>
+
       <nav className="menu">
         <span className="menu-section">Menu interativo</span>
         <div className="menu-divider" />
@@ -17,7 +18,17 @@ function MenuLateral({ paginaAtual, setPaginaAtual, usuarioLogado, onLogout }) {
         <MenuItem label="Contratos" page="contratos" paginaAtual={paginaAtual} setPaginaAtual={setPaginaAtual} />
         <MenuItem label="Fluxo de Caixa" page="valores" paginaAtual={paginaAtual} setPaginaAtual={setPaginaAtual} />
         <MenuItem label="Análise de Custo" page="analise" paginaAtual={paginaAtual} setPaginaAtual={setPaginaAtual} />
+
+        {/* Somente admin pode ver as opções abaixo */}
+        {usuarioLogado.tipo_usuario === 'admin' && (
+          <>
+            <div className="menu-divider" />
+            <MenuItem label="Novo Usuário" page="novoUsuario" paginaAtual={paginaAtual} setPaginaAtual={setPaginaAtual} />
+            <MenuItem label="Novo Contrato" page="novoContrato" paginaAtual={paginaAtual} setPaginaAtual={setPaginaAtual} />
+          </>
+        )}
       </nav>
+
       <div className="user-area">
         <button onClick={onLogout}>Sair</button>
       </div>
