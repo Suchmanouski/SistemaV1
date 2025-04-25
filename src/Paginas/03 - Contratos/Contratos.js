@@ -54,30 +54,24 @@ function Contratos() {
     return passaFiltroEstado && passaBusca;
   });
 
-  const handleSalvar = () => {
-    fetch(`${API_BASE}/api/contratos`, {
-      method: 'POST',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formulario)
-    })
-      .then(res => {
-        if (!res.ok) throw new Error(`Status ${res.status}`);
-        return res.json();
-      })
-      .then(() => {
-        carregarContratos();
-        setFormularioAberto(false);
-        resetarFormulario();
-        setMensagemSucesso('✅ Contrato adicionado com sucesso!');
-        setTimeout(() => setMensagemSucesso(''), 3000);
-      })
-      .catch(err => {
-        console.error('Erro ao salvar contrato:', err);
-        setMensagemSucesso('❌ Erro ao salvar contrato.');
-        setTimeout(() => setMensagemSucesso(''), 3000);
-      });
+  const formatarData = (data) => {
+    if (!data) return null;
+    const [dia, mes, ano] = data.split('/');
+    return `${ano}-${mes}-${dia}`; // fica no formato YYYY-MM-DD
   };
+  
+  const contratoParaSalvar = {
+    ...formulario,
+    dataInicio: formatarData(formulario.dataInicio),
+    dataFim: formatarData(formulario.dataFim)
+  };
+  
+  fetch(`${API_BASE}/api/contratos`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(contratoParaSalvar)
+  })
 
   const cancelarFormulario = () => {
     setFormularioAberto(false);
