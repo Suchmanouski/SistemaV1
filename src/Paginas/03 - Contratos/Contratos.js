@@ -7,6 +7,7 @@ function Contratos() {
   const [busca, setBusca] = useState('');
   const [contratoSelecionado, setContratoSelecionado] = useState(null);
   const [formularioAberto, setFormularioAberto] = useState(false);
+  const [mensagemSucesso, setMensagemSucesso] = useState('');
   const [formulario, setFormulario] = useState({
     numero: '',
     contratante: '',
@@ -23,7 +24,7 @@ function Contratos() {
 
   const API_BASE = 'https://sistema-v1-backend.onrender.com';
 
-  useEffect(() => {
+  const carregarContratos = () => {
     fetch(`${API_BASE}/api/contratos`, { credentials: 'include' })
       .then(res => {
         if (!res.ok) throw new Error(`Status ${res.status}`);
@@ -39,6 +40,10 @@ function Contratos() {
         }
       })
       .catch(err => console.error('Erro ao buscar contratos:', err));
+  };
+
+  useEffect(() => {
+    carregarContratos();
   }, []);
 
   const contratosFiltrados = contratos.filter(contrato => {
@@ -58,24 +63,19 @@ function Contratos() {
     })
       .then(res => {
         if (!res.ok) throw new Error(`Status ${res.status}`);
-        return fetch(`${API_BASE}/api/contratos`, { credentials: 'include' });
+        return res.json();
       })
-      .then(res => {
-        if (!res.ok) throw new Error(`Status ${res.status}`);
-        return res.text();
-      })
-      .then(text => {
-        try {
-          const data = text ? JSON.parse(text) : [];
-          setContratos(data);
-        } catch (err) {
-          console.error('Erro parsing JSON pós-inserção:', err);
-        }
-      })
-      .catch(err => console.error('Erro ao salvar contrato:', err))
-      .finally(() => {
+      .then(() => {
+        carregarContratos();
         setFormularioAberto(false);
         resetarFormulario();
+        setMensagemSucesso('✅ Contrato adicionado com sucesso!');
+        setTimeout(() => setMensagemSucesso(''), 3000);
+      })
+      .catch(err => {
+        console.error('Erro ao salvar contrato:', err);
+        setMensagemSucesso('❌ Erro ao salvar contrato.');
+        setTimeout(() => setMensagemSucesso(''), 3000);
       });
   };
 
@@ -121,6 +121,12 @@ function Contratos() {
           </button>
         </div>
       </div>
+
+      {mensagemSucesso && (
+        <div className="mensagem-sucesso">
+          {mensagemSucesso}
+        </div>
+      )}
 
       <div className="conteudo-contratos">
         <div className="lista-contratos">
