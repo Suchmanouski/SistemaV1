@@ -3,7 +3,6 @@ import './Contratos.css';
 
 function Contratos() {
   const [contratos, setContratos] = useState([]);
-  const [filtroEstado, setFiltroEstado] = useState('');
   const [busca, setBusca] = useState('');
   const [contratoSelecionado, setContratoSelecionado] = useState(null);
   const [formularioAberto, setFormularioAberto] = useState(false);
@@ -22,15 +21,13 @@ function Contratos() {
     tipo: ''
   });
 
+  const perfisQuePodemGerenciar = ['admin'];
   const API_BASE = 'https://sistema-v1-backend.onrender.com';
   const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado')) || {};
 
   const carregarContratos = () => {
     fetch(`${API_BASE}/api/contratos`, { credentials: 'include' })
-      .then(res => {
-        if (!res.ok) throw new Error(`Status ${res.status}`);
-        return res.json();
-      })
+      .then(res => res.json())
       .then(data => setContratos(data))
       .catch(err => console.error('Erro ao buscar contratos:', err));
   };
@@ -54,20 +51,16 @@ function Contratos() {
     const payload = {
       ...formulario,
       dataInicio: formatarData(formulario.dataInicio),
-      dataFim: formatarData(formulario.dataFim),
+      dataFim:    formatarData(formulario.dataFim),
       valorInicial: formatarValor(formulario.valorInicial)
     };
-
     fetch(`${API_BASE}/api/contratos`, {
       method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     })
-      .then(res => {
-        if (!res.ok) throw new Error(`Status ${res.status}`);
-        return res.json();
-      })
+      .then(res => res.json())
       .then(() => {
         carregarContratos();
         setFormularioAberto(false);
@@ -87,8 +80,7 @@ function Contratos() {
       method: 'DELETE',
       credentials: 'include'
     })
-      .then(res => {
-        if (!res.ok) throw new Error(`Status ${res.status}`);
+      .then(() => {
         carregarContratos();
         setMensagemSucesso('✅ Contrato excluído com sucesso!');
         setTimeout(() => setMensagemSucesso(''), 3000);
@@ -125,21 +117,15 @@ function Contratos() {
     setFormulario({ ...formulario, [e.target.name]: e.target.value });
   };
 
+  // Filtra conforme tipo de usuário
   const contratosFiltrados = contratos.filter(ctr => {
-    const passaBusca = ctr.numero.toLowerCase().includes(busca.toLowerCase());
-    const passaEstado = filtroEstado
-      ? ctr.estado?.toLowerCase() === filtroEstado.toLowerCase()
-      : true;
-
-    if (usuarioLogado.tipo_usuario === 'admin' || usuarioLogado.tipo_usuario === 'financeiro') {
-      return passaBusca && passaEstado;
-    }
+    const passaBusca  = ctr.numero.toLowerCase().includes(busca.toLowerCase());
+    // admin/financeiro ve tudo, coordenador só seu contrato
     if (usuarioLogado.tipo_usuario === 'coordenador') {
-      return (
-        ctr.numero.toString() === usuarioLogado.contrato.toString() &&
-        passaBusca &&
-        passaEstado
-      );
+      return ctr.numero.toString() === usuarioLogado.contrato.toString() && passaBusca;
+    }
+    if (['admin','financeiro'].includes(usuarioLogado.tipo_usuario)) {
+      return passaBusca;
     }
     return false;
   });
@@ -149,14 +135,18 @@ function Contratos() {
       <div className="barra-contratos-v2">
         <div className="titulo-contratos">Contratos</div>
         <div className="acoes-contratos">
-          <input
-            type="text"
-            placeholder="Buscar por número do contrato..."
-            className="campo-busca-contrato"
-            value={busca}
-            onChange={e => setBusca(e.target.value)}
-          />
-          {usuarioLogado.tipo_usuario !== 'coordenador' && (
+          {/* Busca só para coordenador */}
+          {usuarioLogado.tipo_usuario === 'coordenador' && (
+            <input
+              type="text"
+              placeholder="Buscar por número do contrato..."
+              className="campo-busca-contrato"
+              value={busca}
+              onChange={e => setBusca(e.target.value)}
+            />
+          )}
+          {/* Novo contrato só para admin */}
+          {perfisQuePodemGerenciar.includes(usuarioLogado.tipo_usuario) && (
             <button
               className="btn-novo-contrato"
               onClick={() => setFormularioAberto(true)}
@@ -167,7 +157,9 @@ function Contratos() {
         </div>
       </div>
 
-      {mensagemSucesso && <div className="mensagem-sucesso">{mensagemSucesso}</div>}
+      {mensagemSucesso && (
+        <div className="mensagem-sucesso">{mensagemSucesso}</div>
+      )}
 
       <div className="conteudo-contratos">
         <div className="lista-contratos">
@@ -181,7 +173,8 @@ function Contratos() {
                 <button onClick={() => setContratoSelecionado(ctr)}>
                   Visualizar
                 </button>
-                {usuarioLogado.tipo_usuario !== 'coordenador' && (
+                {/* Excluir só para admin */}
+                {perfisQuePodemGerenciar.includes(usuarioLogado.tipo_usuario) && (
                   <button
                     className="btn-excluir"
                     onClick={() => handleExcluir(ctr.id)}
@@ -195,6 +188,7 @@ function Contratos() {
         </div>
       </div>
 
+      {/* Modal Visualizar */}
       {contratoSelecionado && (
         <div className="modal-overlay" onClick={() => setContratoSelecionado(null)}>
           <div className="modal-contrato" onClick={e => e.stopPropagation()}>
@@ -204,16 +198,14 @@ function Contratos() {
                 <strong>{key}:</strong> {value}
               </p>
             ))}
-            <button
-              className="fechar-modal"
-              onClick={() => setContratoSelecionado(null)}
-            >
+            <button className="fechar-modal" onClick={() => setContratoSelecionado(null)}>
               Fechar
             </button>
           </div>
         </div>
       )}
 
+      {/* Modal Novo Contrato */}
       {formularioAberto && (
         <div className="modal-overlay" onClick={cancelarFormulario}>
           <div className="modal-contrato" onClick={e => e.stopPropagation()}>
