@@ -1,8 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
+
 import estadosGeoJson from './GeoJSON/estadosBrasil.json';
-import './MapaBrasil.css';
+;
 import L from 'leaflet';
 
 const centroDoBrasil = [-15.78, -47.93];
@@ -64,26 +63,8 @@ function MapaBrasil({ onEstadoSelecionado = () => {}, contratos = [] }) {
     }
   }, []);
 
-  return (
-    <div className="mapa-wrapper">
-      <MapContainer
-        center={centroDoBrasil}
-        zoom={4}
-        scrollWheelZoom={true}
-        whenCreated={(map) => { mapRef.current = map; }}
-      >
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution="&copy; OpenStreetMap contributors"
-        />
-        <GeoJSON
-          data={estadosGeoJson}
-          style={getFeatureStyle}
-          onEachFeature={onEachEstado}
-        />
-      </MapContainer>
-    </div>
-  );
+   
+  
 }
 
 export default MapaBrasil;
