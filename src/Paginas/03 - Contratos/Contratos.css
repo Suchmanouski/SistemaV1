@@ -265,3 +265,19 @@
 .btn-excluir:hover {
   background-color: #ff1a1a;
 }
+.btn-excluir { /* já existente */ }
+
+.btn-editar {
+  background-color: #4da6ff;
+  border: none;
+  padding: 6px 12px;
+  margin-left: 8px;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+.btn-editar:hover {
+  background-color: #3399ff;
+}
