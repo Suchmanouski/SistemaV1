@@ -3,7 +3,6 @@ import './Contratos.css';
 
 function Contratos() {
   const [contratos, setContratos] = useState([]);
-  const [filtroEstado, setFiltroEstado] = useState('');
   const [busca, setBusca] = useState('');
   const [contratoSelecionado, setContratoSelecionado] = useState(null);
   const [formularioAberto, setFormularioAberto] = useState(false);
@@ -21,6 +20,9 @@ function Contratos() {
     status: '',
     tipo: ''
   });
+
+  // Apenas 'admin' pode criar/excluir
+  const perfisQuePodemGerenciar = ['admin'];
 
   const API_BASE = 'https://sistema-v1-backend.onrender.com';
   const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado')) || {};
@@ -54,7 +56,7 @@ function Contratos() {
     const payload = {
       ...formulario,
       dataInicio: formatarData(formulario.dataInicio),
-      dataFim: formatarData(formulario.dataFim),
+      dataFim:    formatarData(formulario.dataFim),
       valorInicial: formatarValor(formulario.valorInicial)
     };
 
@@ -125,24 +127,14 @@ function Contratos() {
     setFormulario({ ...formulario, [e.target.name]: e.target.value });
   };
 
-  // Filtra conforme tipo de usuário
+  // Filtrar contratos por perfil
   const contratosFiltrados = contratos.filter(ctr => {
-    const passaBusca = ctr.numero.toLowerCase().includes(busca.toLowerCase());
-    const passaEstado = filtroEstado
-      ? ctr.estado?.toLowerCase() === filtroEstado.toLowerCase()
-      : true;
-
-    if (usuarioLogado.tipo_usuario === 'admin' || usuarioLogado.tipo_usuario === 'financeiro') {
-      return passaBusca && passaEstado;
-    }
+    // coordenador só vê seu número
     if (usuarioLogado.tipo_usuario === 'coordenador') {
-      return (
-        ctr.numero.toString() === usuarioLogado.contrato.toString() &&
-        passaBusca &&
-        passaEstado
-      );
+      return ctr.numero.toString() === usuarioLogado.contrato.toString();
     }
-    return false;
+    // admin e financeiro veem todos
+    return true;
   });
 
   return (
@@ -150,20 +142,32 @@ function Contratos() {
       <div className="barra-contratos-v2">
         <div className="titulo-contratos">Contratos</div>
         <div className="acoes-contratos">
-          <input
-            type="text"
-            placeholder="Buscar por número do contrato..."
-            className="campo-busca-contrato"
-            value={busca}
-            onChange={e => setBusca(e.target.value)}
-          />
-          <button className="btn-novo-contrato" onClick={() => setFormularioAberto(true)}>
-            + Novo Contrato
-          </button>
+          {/* busca só para coordenador */}
+          {usuarioLogado.tipo_usuario === 'coordenador' && (
+            <input
+              type="text"
+              placeholder="Buscar por número do contrato..."
+              className="campo-busca-contrato"
+              value={busca}
+              onChange={e => setBusca(e.target.value)}
+            />
+          )}
+
+          {/* novo contrato só para admin */}
+          {perfisQuePodemGerenciar.includes(usuarioLogado.tipo_usuario) && (
+            <button
+              className="btn-novo-contrato"
+              onClick={() => setFormularioAberto(true)}
+            >
+              + Novo Contrato
+            </button>
+          )}
         </div>
       </div>
 
-      {mensagemSucesso && <div className="mensagem-sucesso">{mensagemSucesso}</div>}
+      {mensagemSucesso && (
+        <div className="mensagem-sucesso">{mensagemSucesso}</div>
+      )}
 
       <div className="conteudo-contratos">
         <div className="lista-contratos">
@@ -174,10 +178,18 @@ function Contratos() {
                 Criado por {ctr.criador} em {ctr.data_criacao?.split('T')[0]}
               </div>
               <div className="acoes-card">
-                <button onClick={() => setContratoSelecionado(ctr)}>Visualizar</button>
-                <button className="btn-excluir" onClick={() => handleExcluir(ctr.id)}>
-                  Excluir
+                <button onClick={() => setContratoSelecionado(ctr)}>
+                  Visualizar
                 </button>
+                {/* excluir só para admin */}
+                {perfisQuePodemGerenciar.includes(usuarioLogado.tipo_usuario) && (
+                  <button
+                    className="btn-excluir"
+                    onClick={() => handleExcluir(ctr.id)}
+                  >
+                    Excluir
+                  </button>
+                )}
               </div>
             </div>
           ))}
@@ -193,7 +205,10 @@ function Contratos() {
                 <strong>{key}:</strong> {value}
               </p>
             ))}
-            <button className="fechar-modal" onClick={() => setContratoSelecionado(null)}>
+            <button
+              className="fechar-modal"
+              onClick={() => setContratoSelecionado(null)}
+            >
               Fechar
             </button>
           </div>
