@@ -1,132 +1,148 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Contratos.css';
 
 function Contratos() {
   const [contratos, setContratos] = useState([]);
+  const [filtroEstado, setFiltroEstado] = useState('');
   const [busca, setBusca] = useState('');
+  const [contratoSelecionado, setContratoSelecionado] = useState(null);
+  const [formularioAberto, setFormularioAberto] = useState(false);
+  const [mensagemSucesso, setMensagemSucesso] = useState('');
   const [formulario, setFormulario] = useState({
-    numero:'', contratante:'', estado:'', cidade:'',
-    gerente:'', coordenador:'', valorInicial:'',
-    dataInicio:'', dataFim:'', status:'', tipo:''
+    numero: '',
+    contratante: '',
+    estado: '',
+    cidade: '',
+    gerente: '',
+    coordenador: '',
+    valorInicial: '',
+    dataInicio: '',
+    dataFim: '',
+    status: '',
+    tipo: ''
   });
-  const [mensagem, setMensagem] = useState('');
-  const [editarId, setEditarId] = useState(null);
-  const [formAberto, setFormAberto] = useState(false);
 
-  const usuario = JSON.parse(sessionStorage.getItem('usuarioLogado'))||{};
-  const API = 'https://sistema-v1-backend.onrender.com';
+  const API_BASE = 'https://sistema-v1-backend.onrender.com';
+  const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado')) || {};
 
-  // paginação
-  const [page, setPage] = useState(1);
-  const [temMais, setTemMais] = useState(true);
-  const carregandoRef = useRef(false);
-
-  const fetchContratos = p => {
-    carregandoRef.current = true;
-    fetch(`${API}/api/contratos?page=${p}&limit=20`, { credentials:'include' })
-      .then(r=>r.json())
-      .then(data=>{
-        setContratos(prev=> p===1 ? data : [...prev, ...data]);
-        if (data.length < 20) setTemMais(false);
+  const carregarContratos = () => {
+    fetch(`${API_BASE}/api/contratos`, { credentials: 'include' })
+      .then(res => {
+        if (!res.ok) throw new Error(`Status ${res.status}`);
+        return res.json();
       })
-      .finally(()=> carregandoRef.current = false);
+      .then(data => setContratos(data))
+      .catch(err => console.error('Erro ao buscar contratos:', err));
   };
 
-  useEffect(()=> {
-    fetchContratos(1);
-    const onScroll = () => {
-      if (!temMais || carregandoRef.current) return;
-      if (window.innerHeight+window.scrollY >= document.body.offsetHeight-50) {
-        setPage(pg=>pg+1);
-      }
-    };
-    window.addEventListener('scroll', onScroll);
-    return ()=> window.removeEventListener('scroll', onScroll);
+  useEffect(() => {
+    carregarContratos();
   }, []);
 
-  useEffect(()=> {
-    if (page>1) fetchContratos(page);
-  }, [page]);
-
-  const formatarData = d => {
-    if (!d) return null;
-    const [day, mon, yr] = d.split('/');
-    return `${yr}-${mon}-${day}`;
-  };
-  const formatarValor = v =>
-    v ? parseFloat(v.replace(/\./g,'').replace(',','.')) : null;
-
-  const openForm = (ctr=null)=>{
-    if(ctr){
-      setEditarId(ctr.id);
-      // pré-preenche o form
-      const toBR = d => d?.split('T')[0].split('-').reverse().join('/');
-      setFormulario({
-        numero: ctr.numero,
-        contratante: ctr.contratante,
-        estado: ctr.estado,
-        cidade: ctr.cidade,
-        gerente: ctr.gerente,
-        coordenador: ctr.coordenador,
-        valorInicial: ctr.valor_inicial.toLocaleString('pt-BR',{minimumFractionDigits:2}),
-        dataInicio: toBR(ctr.data_inicio),
-        dataFim: toBR(ctr.data_fim),
-        status: ctr.status,
-        tipo: ctr.tipo
-      });
-    } else {
-      setEditarId(null);
-      setFormulario({
-        numero:'', contratante:'', estado:'', cidade:'',
-        gerente:'', coordenador:'', valorInicial:'',
-        dataInicio:'', dataFim:'', status:'', tipo:''
-      });
-    }
-    setFormAberto(true);
+  const formatarData = dataString => {
+    if (!dataString) return null;
+    const [dia, mes, ano] = dataString.split('/');
+    return `${ano}-${mes}-${dia}`;
   };
 
-  const salvar = () => {
-    const corpo = {
+  const formatarValor = valorString => {
+    if (!valorString) return null;
+    return parseFloat(valorString.replace(/\./g, '').replace(',', '.'));
+  };
+
+  const handleSalvar = () => {
+    const payload = {
       ...formulario,
       dataInicio: formatarData(formulario.dataInicio),
-      dataFim:    formatarData(formulario.dataFim),
-      valorInicial: formatarValor(formulario.valorInicial),
-      criador: usuario.nome
+      dataFim: formatarData(formulario.dataFim),
+      valorInicial: formatarValor(formulario.valorInicial)
     };
-    const method = editarId ? 'PUT' : 'POST';
-    const url    = editarId ? `${API}/api/contratos/${editarId}` : `${API}/api/contratos`;
-    fetch(url, {
-      method, credentials:'include',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify(corpo)
-    })
-      .then(r=>r.json())
-      .then(()=>{
-        setMensagem(editarId?'🚀 Atualizado!':'✅ Criado!');
-        fetchContratos(1); setPage(1); setTemMais(true);
-        setTimeout(()=>setMensagem(''),3000);
-      })
-      .finally(()=> setFormAberto(false));
-  };
 
-  const excluir = id => {
-    fetch(`${API}/api/contratos/${id}`, {
-      method:'DELETE', credentials:'include'
+    fetch(`${API_BASE}/api/contratos`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
     })
-      .then(()=> {
-        setMensagem('🗑️ Excluído!');
-        fetchContratos(1); setPage(1); setTemMais(true);
-        setTimeout(()=>setMensagem(''),3000);
+      .then(res => {
+        if (!res.ok) throw new Error(`Status ${res.status}`);
+        return res.json();
+      })
+      .then(() => {
+        carregarContratos();
+        setFormularioAberto(false);
+        resetarFormulario();
+        setMensagemSucesso('✅ Contrato adicionado com sucesso!');
+        setTimeout(() => setMensagemSucesso(''), 3000);
+      })
+      .catch(err => {
+        console.error('Erro ao salvar contrato:', err);
+        setMensagemSucesso('❌ Erro ao salvar contrato.');
+        setTimeout(() => setMensagemSucesso(''), 3000);
       });
   };
 
-  // filtro por tipo de usuário
-  const listFiltrada = contratos.filter(c=>{
-    if(usuario.tipo_usuario==='coordenador'){
-      return c.numero.toString()===usuario.contrato.toString()
-        && c.numero.toString().includes(busca);
+  const handleExcluir = id => {
+    fetch(`${API_BASE}/api/contratos/${id}`, {
+      method: 'DELETE',
+      credentials: 'include'
+    })
+      .then(res => {
+        if (!res.ok) throw new Error(`Status ${res.status}`);
+        carregarContratos();
+        setMensagemSucesso('✅ Contrato excluído com sucesso!');
+        setTimeout(() => setMensagemSucesso(''), 3000);
+      })
+      .catch(err => {
+        console.error('Erro ao excluir contrato:', err);
+        setMensagemSucesso('❌ Erro ao excluir contrato.');
+        setTimeout(() => setMensagemSucesso(''), 3000);
+      });
+  };
+
+  const cancelarFormulario = () => {
+    setFormularioAberto(false);
+    resetarFormulario();
+  };
+
+  const resetarFormulario = () => {
+    setFormulario({
+      numero: '',
+      contratante: '',
+      estado: '',
+      cidade: '',
+      gerente: '',
+      coordenador: '',
+      valorInicial: '',
+      dataInicio: '',
+      dataFim: '',
+      status: '',
+      tipo: ''
+    });
+  };
+
+  const handleChange = e => {
+    setFormulario({ ...formulario, [e.target.name]: e.target.value });
+  };
+
+  // Filtra conforme tipo de usuário
+  const contratosFiltrados = contratos.filter(ctr => {
+    const passaBusca = ctr.numero.toLowerCase().includes(busca.toLowerCase());
+    const passaEstado = filtroEstado
+      ? ctr.estado?.toLowerCase() === filtroEstado.toLowerCase()
+      : true;
+
+    if (usuarioLogado.tipo_usuario === 'admin' || usuarioLogado.tipo_usuario === 'financeiro') {
+      return passaBusca && passaEstado;
     }
-    return c.numero.toString().includes(busca);
+    if (usuarioLogado.tipo_usuario === 'coordenador') {
+      return (
+        ctr.numero.toString() === usuarioLogado.contrato.toString() &&
+        passaBusca &&
+        passaEstado
+      );
+    }
+    return false;
   });
 
   return (
@@ -134,70 +150,80 @@ function Contratos() {
       <div className="barra-contratos-v2">
         <div className="titulo-contratos">Contratos</div>
         <div className="acoes-contratos">
-          {/* coordenador pode buscar */}
-          {usuario.tipo_usuario==='coordenador' && (
-            <input
-              placeholder="Buscar..."
-              value={busca}
-              onChange={e=>setBusca(e.target.value)}
-              className="campo-busca-contrato"
-            />
-          )}
-          {/* admin só pode criar */}
-          {usuario.tipo_usuario==='admin' && (
-            <button className="btn-novo-contrato" onClick={()=>openForm()}>
-              + Novo Contrato
-            </button>
-          )}
+          <input
+            type="text"
+            placeholder="Buscar por número do contrato..."
+            className="campo-busca-contrato"
+            value={busca}
+            onChange={e => setBusca(e.target.value)}
+          />
+          <button className="btn-novo-contrato" onClick={() => setFormularioAberto(true)}>
+            + Novo Contrato
+          </button>
         </div>
       </div>
 
-      {mensagem && <div className="mensagem-sucesso">{mensagem}</div>}
+      {mensagemSucesso && <div className="mensagem-sucesso">{mensagemSucesso}</div>}
 
       <div className="conteudo-contratos">
-        {listFiltrada.map(c=>(
-          <div className="contrato-card" key={c.id}>
-            <strong>{c.numero}</strong> – {c.contratante}
-            <div className="info-criador">
-              Criado por {c.criador} em {c.data_criacao.split('T')[0]}
-            </div>
-            <div className="acoes-card">
-              <button onClick={()=>openForm(c)}>Editar</button>
-              {usuario.tipo_usuario==='admin' && (
-                <button className="btn-excluir" onClick={()=>excluir(c.id)}>
+        <div className="lista-contratos">
+          {contratosFiltrados.map(ctr => (
+            <div className="contrato-card" key={ctr.id}>
+              <strong>{ctr.numero}</strong> – {ctr.contratante}
+              <div className="info-criador">
+                Criado por {ctr.criador} em {ctr.data_criacao?.split('T')[0]}
+              </div>
+              <div className="acoes-card">
+                <button onClick={() => setContratoSelecionado(ctr)}>Visualizar</button>
+                <button className="btn-excluir" onClick={() => handleExcluir(ctr.id)}>
                   Excluir
                 </button>
-              )}
+              </div>
             </div>
-          </div>
-        ))}
-        {carregandoRef.current && <p>Carregando...</p>}
-        {!temMais && <p>— fim —</p>}
+          ))}
+        </div>
       </div>
 
-      {formAberto && (
-        <div className="modal-overlay" onClick={()=>setFormAberto(false)}>
-          <div className="modal-contrato" onClick={e=>e.stopPropagation()}>
-            <h3>{editarId?'Editar':'Novo'} Contrato</h3>
+      {contratoSelecionado && (
+        <div className="modal-overlay" onClick={() => setContratoSelecionado(null)}>
+          <div className="modal-contrato" onClick={e => e.stopPropagation()}>
+            <h3>Detalhes do Contrato</h3>
+            {Object.entries(contratoSelecionado).map(([key, value]) => (
+              <p key={key}>
+                <strong>{key}:</strong> {value}
+              </p>
+            ))}
+            <button className="fechar-modal" onClick={() => setContratoSelecionado(null)}>
+              Fechar
+            </button>
+          </div>
+        </div>
+      )}
+
+      {formularioAberto && (
+        <div className="modal-overlay" onClick={cancelarFormulario}>
+          <div className="modal-contrato" onClick={e => e.stopPropagation()}>
+            <h3>Novo Contrato</h3>
             <div className="formulario-grid">
-              {Object.entries(formulario).map(([campo, val])=>(
-                <div className="form-group" key={campo}>
+              {Object.keys(formulario).map(campo => (
+                <div key={campo} className="form-group">
                   <label>{campo}</label>
                   <input
                     name={campo}
-                    value={val}
-                    onChange={e=>setFormulario(f=>({...f,[campo]:e.target.value}))}
+                    value={formulario[campo]}
+                    placeholder={campo}
+                    onChange={handleChange}
                   />
                 </div>
               ))}
-            </div>
-            <div className="botoes-formulario">
-              <button className="btn-salvar" onClick={salvar}>
-                {editarId?'Atualizar':'Salvar'}
-              </button>
-              <button className="fechar-modal" onClick={()=>setFormAberto(false)}>
-                Cancelar
-              </button>
+              <div className="botoes-formulario">
+                <button className="btn-salvar" onClick={handleSalvar}>
+                  Salvar
+                </button>
+                <button className="fechar-modal" onClick={cancelarFormulario}>
+                  Cancelar
+                </button>
+              </div>
             </div>
           </div>
         </div>
