@@ -1,96 +1,102 @@
-/* src/Paginas/00 - Login/Login.css */
+* { box-sizing: border-box; }
 
 .login-page {
   display: flex;
-  width: 100vw;
   height: 100vh;
+  font-family: 'Inter', sans-serif;
+}
+
+/* === painel de imagem === */
+.login-left {
+  width: 60%;
+  position: relative;
   overflow: hidden;
 }
-
-/* ---- 70% para a imagem ---- */
-.login-left {
-  flex: none;          /* tira o flex:1 */
-  width: 70% !important;
-  height: 100%;
-  position: relative;
-}
-
-/* slide de fundos */
 .login-fundo {
   position: absolute;
-  top: 0; left: 0;
+  inset: 0;
   width: 100%; height: 100%;
   object-fit: cover;
   opacity: 0;
-  transition: opacity 0.8s ease-in-out;
+  transition: opacity 1s ease-in-out;
 }
 .login-fundo.ativo {
   opacity: 1;
 }
 
-/* ---- 30% para o form ---- */
+/* === painel de formulário === */
 .login-right {
-  flex: none;          /* tira o flex:1 */
-  width: 30% !important;
-  height: 100%;
+  width: 40%;
+  background: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(250,250,250,0.95);
 }
-
-/* Caixa de login */
 .login-box {
-  background: #fff;
-  padding: 2rem;
-  max-width: 280px;
   width: 100%;
+  max-width: 360px;
+  padding: 2rem;
+  background: #ffffff;
   border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-}
-
-.login-box h2 {
-  margin-bottom: 1.5rem;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.12);
   text-align: center;
+}
+.login-logo {
+  width: 100px;
+  margin-bottom: 1rem;
+}
+.login-box h1 {
+  margin-bottom: 1.5rem;
+  font-size: 1.6rem;
   color: #333;
 }
-
-.login-box label {
+.form-group {
+  margin-bottom: 1rem;
+  text-align: left;
+}
+.form-group label {
   display: block;
-  margin: 0.5rem 0 0.25rem;
+  margin-bottom: 0.4rem;
   font-size: 0.9rem;
   color: #555;
 }
-
-.login-box input[type="text"],
-.login-box input[type="password"] {
+.form-group input {
   width: 100%;
-  padding: 0.6rem 0.75rem;
+  padding: 0.65rem 0.75rem;
   font-size: 1rem;
   border: 1px solid #ccd0d5;
   border-radius: 4px;
-  margin-bottom: 1rem;
+}
+.senha-group {
+  position: relative;
+}
+.ver-senha-btn {
+  position: absolute;
+  top: 50%; right: 0.75rem;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
 }
 
-/* “Mostrar senha” e “Lembrar credenciais” */
-.show-password,
-.login-extras {
+/* extras: lembrar + link */
+.extras {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
   font-size: 0.9rem;
-  margin-bottom: 1rem;
 }
-.show-password label,
-.login-extras label {
+.checkbox-label {
   display: flex;
   align-items: center;
+  cursor: pointer;
 }
-.show-password input,
-.login-extras input {
-  margin-right: 0.5rem;
+.checkbox-label input {
+  margin-right: 0.4rem;
 }
-
-/* Link “Esqueceu senha?” */
 .link-esqueci {
-  font-size: 0.9rem;
   color: #0066cc;
   text-decoration: none;
 }
@@ -98,7 +104,15 @@
   text-decoration: underline;
 }
 
-/* Botão Entrar */
+/* erro */
+.erro {
+  color: #c00;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+/* botão principal */
 .login-btn {
   width: 100%;
   padding: 0.75rem;
@@ -108,21 +122,7 @@
   border-radius: 4px;
   font-size: 1rem;
   cursor: pointer;
-  margin-bottom: 1rem;
 }
 .login-btn:hover {
   background: #005bb5;
-}
-
-/* Esconde totalmente “Criar conta” */
-.login-cadastro {
-  display: none;
-}
-
-/* Erro de login */
-.login-erro {
-  color: #c00;
-  font-size: 0.9rem;
-  margin-bottom: 1rem;
-  text-align: left;
 }
