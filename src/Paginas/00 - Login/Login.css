@@ -2,19 +2,23 @@
 
 .login-page {
   display: flex;
-  height: 100vh;
+  width: 100vw;      /* ocupa toda a largura da viewport */
+  height: 100vh;     /* ocupa toda a altura da viewport */
   overflow: hidden;
 }
 
 .login-left {
-  flex: 1;
+  width: 50%;        /* metade da tela para o slide de fundos */
+  height: 100%;
   position: relative;
 }
 
 .login-fundo {
   position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   opacity: 0;
   transition: opacity 0.8s ease-in-out;
@@ -25,11 +29,12 @@
 }
 
 .login-right {
-  flex: 1;
+  width: 50%;        /* metade da tela para o form */
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(250,250,250,0.9);
+  background: rgba(250, 250, 250, 0.9);
 }
 
 .login-box {
