@@ -1,4 +1,4 @@
-/* Login.css */
+/* src/Paginas/00 - Login/Login.css */
 
 .login-page {
   display: flex;
@@ -7,12 +7,15 @@
   overflow: hidden;
 }
 
+/* ---- 70% para a imagem ---- */
 .login-left {
-  width: 70%;                /* 70% para a imagem */
+  flex: none;          /* tira o flex:1 */
+  width: 70% !important;
   height: 100%;
   position: relative;
 }
 
+/* slide de fundos */
 .login-fundo {
   position: absolute;
   top: 0; left: 0;
@@ -21,13 +24,14 @@
   opacity: 0;
   transition: opacity 0.8s ease-in-out;
 }
-
 .login-fundo.ativo {
   opacity: 1;
 }
 
+/* ---- 30% para o form ---- */
 .login-right {
-  width: 30%;                /* 30% para o form */
+  flex: none;          /* tira o flex:1 */
+  width: 30% !important;
   height: 100%;
   display: flex;
   align-items: center;
@@ -35,8 +39,9 @@
   background: rgba(250,250,250,0.95);
 }
 
+/* Caixa de login */
 .login-box {
-  background: white;
+  background: #fff;
   padding: 2rem;
   max-width: 280px;
   width: 100%;
@@ -67,52 +72,57 @@
   margin-bottom: 1rem;
 }
 
+/* “Mostrar senha” e “Lembrar credenciais” */
+.show-password,
 .login-extras {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
   font-size: 0.9rem;
+  margin-bottom: 1rem;
 }
-
+.show-password label,
 .login-extras label {
   display: flex;
   align-items: center;
 }
-
-.login-extras input[type="checkbox"] {
+.show-password input,
+.login-extras input {
   margin-right: 0.5rem;
 }
 
-.show-password {
-  margin-bottom: 1rem;
+/* Link “Esqueceu senha?” */
+.link-esqueci {
   font-size: 0.9rem;
+  color: #0066cc;
+  text-decoration: none;
+}
+.link-esqueci:hover {
+  text-decoration: underline;
 }
 
+/* Botão Entrar */
 .login-btn {
   width: 100%;
   padding: 0.75rem;
   background: #0066cc;
-  color: white;
+  color: #fff;
   border: none;
   border-radius: 4px;
   font-size: 1rem;
   cursor: pointer;
   margin-bottom: 1rem;
 }
-
 .login-btn:hover {
   background: #005bb5;
 }
 
+/* Esconde totalmente “Criar conta” */
+.login-cadastro {
+  display: none;
+}
+
+/* Erro de login */
 .login-erro {
   color: #c00;
   font-size: 0.9rem;
   margin-bottom: 1rem;
   text-align: left;
-}
-
-/* Esconde o link de cadastro */
-.login-cadastro {
-  display: none;
 }
