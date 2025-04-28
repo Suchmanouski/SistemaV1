@@ -1,29 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Login.css';
+import logo from '../../Imagens/logo.jpg';
+import fundo1 from '../../Imagens/1.jpg';
+import fundo2 from '../../Imagens/2.jpg';
+import fundo3 from '../../Imagens/3.jpg';
 
 function Login({ onLoginSuccess }) {
-  const [email, setEmail] = useState('');
+  const [nome, setNome] = useState('');
   const [senha, setSenha] = useState('');
+  const [erro, setErro] = useState('');
   const [verSenha, setVerSenha] = useState(false);
   const [lembrar, setLembrar] = useState(false);
-  const [erro, setErro] = useState('');
+  const [fundoIndex, setFundoIndex] = useState(0);
 
-  const handleSubmit = async e => {
+  const fundos = [fundo1, fundo2, fundo3];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setFundoIndex((prev) => (prev + 1) % fundos.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleLogin = async e => {
     e.preventDefault();
     setErro('');
     try {
       const res = await fetch('https://sistema-v1-backend.onrender.com/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nome: email, senha })
+        body: JSON.stringify({ nome, senha })
       });
-      const json = await res.json();
-      if (res.ok) {
-        if (lembrar) localStorage.setItem('usuarioLogado', JSON.stringify(json));
-        else sessionStorage.setItem('usuarioLogado', JSON.stringify(json));
-        onLoginSuccess(json);
+      const data = await res.json();
+      if (!res.ok) {
+        setErro(data.message || 'Erro ao logar');
       } else {
-        setErro(json.message || 'Erro ao logar');
+        if (lembrar) localStorage.setItem('usuarioLogado', JSON.stringify(data));
+        else sessionStorage.setItem('usuarioLogado', JSON.stringify(data));
+        onLoginSuccess(data);
       }
     } catch {
       setErro('Erro de conexão');
@@ -32,62 +46,78 @@ function Login({ onLoginSuccess }) {
 
   return (
     <div className="login-page">
-      <form className="login-box" onSubmit={handleSubmit}>
-        <h1>Grupo Simemp Neoconstec</h1>
-
-        <label htmlFor="email">Email</label>
-        <input
-          id="email"
-          type="email"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          placeholder="seu@exemplo.com"
-          required
-        />
-
-        <label htmlFor="senha">Senha</label>
-        <div className="senha-wrapper">
-          <input
-            id="senha"
-            type={verSenha ? 'text' : 'password'}
-            value={senha}
-            onChange={e => setSenha(e.target.value)}
-            placeholder="••••••••"
-            required
+      <div className="login-left">
+        {fundos.map((img, idx) => (
+          <img
+            key={idx}
+            src={img}
+            alt=""
+            className={`login-fundo ${fundoIndex === idx ? 'ativo' : ''}`}
           />
-          <button
-            type="button"
-            className="toggle-senha"
-            onClick={() => setVerSenha(v => !v)}
-          >
-            {verSenha ? '🙈' : '👁️'}
-          </button>
-        </div>
+        ))}
+      </div>
 
-        <div className="extras">
-          <label>
+      <div className="login-right">
+        <div className="login-box">
+          <img src={logo} alt="Logo" className="login-logo" />
+          <h2>Grupo Simemp Neoconstec</h2>
+
+          <form onSubmit={handleLogin}>
+            <label htmlFor="nome">Usuario ou Email</label>
             <input
-              type="checkbox"
-              checked={lembrar}
-              onChange={e => setLembrar(e.target.checked)}
+              id="nome"
+              type="text"
+              placeholder="Digite seu usuário"
+              value={nome}
+              onChange={e => setNome(e.target.value)}
+              required
             />
-            Lembrar credenciais
-          </label>
-          <a href="/esqueci-senha" className="link-pequeno">
-            Esqueceu sua senha?
-          </a>
+
+            <label htmlFor="senha">Senha</label>
+            <div className="senha-container">
+              <input
+                id="senha"
+                type={verSenha ? 'text' : 'password'}
+                placeholder="••••••"
+                value={senha}
+                onChange={e => setSenha(e.target.value)}
+                required
+              />
+              <button
+                type="button"
+                className="toggle-icone"
+                onClick={() => setVerSenha(v => !v)}
+              >
+                {verSenha ? '🙈' : '👁️'}
+              </button>
+            </div>
+
+            {erro && <div className="login-erro">{erro}</div>}
+
+            <div className="login-extras">
+              <label>
+                <input
+                  type="checkbox"
+                  checked={lembrar}
+                  onChange={e => setLembrar(e.target.checked)}
+                />
+                Lembrar credenciais
+              </label>
+              <a href="#" className="link-esqueci">
+                Esqueceu sua senha?
+              </a>
+            </div>
+
+            <button type="submit" className="login-btn">
+              ENTRAR
+            </button>
+          </form>
+
+          <div className="login-cadastro">
+            Ainda não tem conta? <a href="#">Inscrever-se</a>
+          </div>
         </div>
-
-        {erro && <div className="login-erro">{erro}</div>}
-
-        <button type="submit" className="btn-login">
-          ENTRAR
-        </button>
-
-        <div className="cadastro">
-          Ainda não tem conta? <a href="/inscrever-se">Inscrever-se</a>
-        </div>
-      </form>
+      </div>
     </div>
   );
 }
