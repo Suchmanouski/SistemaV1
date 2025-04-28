@@ -2,23 +2,21 @@
 
 .login-page {
   display: flex;
-  width: 100vw;      /* ocupa toda a largura da viewport */
-  height: 100vh;     /* ocupa toda a altura da viewport */
+  width: 100vw;
+  height: 100vh;
   overflow: hidden;
 }
 
 .login-left {
-  width: 50%;        /* metade da tela para o slide de fundos */
+  width: 70%;                /* 70% para a imagem */
   height: 100%;
   position: relative;
 }
 
 .login-fundo {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
   object-fit: cover;
   opacity: 0;
   transition: opacity 0.8s ease-in-out;
@@ -29,32 +27,26 @@
 }
 
 .login-right {
-  width: 50%;        /* metade da tela para o form */
+  width: 30%;                /* 30% para o form */
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(250, 250, 250, 0.9);
+  background: rgba(250,250,250,0.95);
 }
 
 .login-box {
   background: white;
   padding: 2rem;
-  max-width: 360px;
+  max-width: 280px;
   width: 100%;
   border-radius: 8px;
   box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-  text-align: center;
-}
-
-.login-logo {
-  width: 80px;
-  margin-bottom: 1rem;
 }
 
 .login-box h2 {
   margin-bottom: 1.5rem;
-  font-size: 1.4rem;
+  text-align: center;
   color: #333;
 }
 
@@ -63,7 +55,6 @@
   margin: 0.5rem 0 0.25rem;
   font-size: 0.9rem;
   color: #555;
-  text-align: left;
 }
 
 .login-box input[type="text"],
@@ -76,33 +67,11 @@
   margin-bottom: 1rem;
 }
 
-.senha-container {
-  position: relative;
-}
-
-.toggle-icone {
-  position: absolute;
-  right: 0.75rem;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1.2rem;
-}
-
-.login-erro {
-  color: #c00;
-  font-size: 0.9rem;
-  margin-bottom: 1rem;
-  text-align: left;
-}
-
 .login-extras {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.2rem;
+  margin-bottom: 1rem;
   font-size: 0.9rem;
 }
 
@@ -115,13 +84,9 @@
   margin-right: 0.5rem;
 }
 
-.link-esqueci {
-  color: #0066cc;
-  text-decoration: none;
-}
-
-.link-esqueci:hover {
-  text-decoration: underline;
+.show-password {
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
 }
 
 .login-btn {
@@ -140,16 +105,14 @@
   background: #005bb5;
 }
 
-.login-cadastro {
+.login-erro {
+  color: #c00;
   font-size: 0.9rem;
-  color: #555;
+  margin-bottom: 1rem;
+  text-align: left;
 }
 
-.login-cadastro a {
-  color: #0066cc;
-  text-decoration: none;
-}
-
-.login-cadastro a:hover {
-  text-decoration: underline;
+/* Esconde o link de cadastro */
+.login-cadastro {
+  display: none;
 }

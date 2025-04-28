@@ -10,7 +10,6 @@ function Login({ onLoginSuccess }) {
   const [senha, setSenha] = useState('');
   const [erro, setErro] = useState('');
   const [verSenha, setVerSenha] = useState(false);
-  const [lembrar, setLembrar] = useState(false);
   const [fundoIndex, setFundoIndex] = useState(0);
 
   const fundos = [fundo1, fundo2, fundo3];
@@ -22,26 +21,23 @@ function Login({ onLoginSuccess }) {
     return () => clearInterval(interval);
   }, []);
 
-  const handleLogin = async e => {
+  const handleLogin = (e) => {
     e.preventDefault();
-    setErro('');
-    try {
-      const res = await fetch('https://sistema-v1-backend.onrender.com/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nome, senha })
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setErro(data.message || 'Erro ao logar');
-      } else {
-        if (lembrar) localStorage.setItem('usuarioLogado', JSON.stringify(data));
-        else sessionStorage.setItem('usuarioLogado', JSON.stringify(data));
-        onLoginSuccess(data);
-      }
-    } catch {
-      setErro('Erro de conexão');
-    }
+    fetch('https://sistema-v1-backend.onrender.com/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nome, senha }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.message) {
+          setErro(data.message);
+        } else {
+          setErro('');
+          onLoginSuccess(data);
+        }
+      })
+      .catch(() => setErro('Erro no servidor.'));
   };
 
   return (
@@ -51,7 +47,7 @@ function Login({ onLoginSuccess }) {
           <img
             key={idx}
             src={img}
-            alt=""
+            alt={`fundo ${idx}`}
             className={`login-fundo ${fundoIndex === idx ? 'ativo' : ''}`}
           />
         ))}
@@ -59,62 +55,52 @@ function Login({ onLoginSuccess }) {
 
       <div className="login-right">
         <div className="login-box">
-          <img src={logo} alt="Logo" className="login-logo" />
+          <img src={logo} alt="Logo" style={{ width: 60, margin: '0 auto 1rem', display: 'block' }}/>
           <h2>Grupo Simemp Neoconstec</h2>
-
           <form onSubmit={handleLogin}>
-            <label htmlFor="nome">Usuario ou Email</label>
+            <label>Usuário ou Email</label>
             <input
-              id="nome"
               type="text"
-              placeholder="Digite seu usuário"
               value={nome}
-              onChange={e => setNome(e.target.value)}
+              onChange={(e) => setNome(e.target.value)}
               required
             />
 
-            <label htmlFor="senha">Senha</label>
-            <div className="senha-container">
-              <input
-                id="senha"
-                type={verSenha ? 'text' : 'password'}
-                placeholder="••••••"
-                value={senha}
-                onChange={e => setSenha(e.target.value)}
-                required
-              />
-              <button
-                type="button"
-                className="toggle-icone"
-                onClick={() => setVerSenha(v => !v)}
-              >
-                {verSenha ? '🙈' : '👁️'}
-              </button>
+            <label>Senha</label>
+            <input
+              type={verSenha ? 'text' : 'password'}
+              value={senha}
+              onChange={(e) => setSenha(e.target.value)}
+              required
+            />
+
+            <div className="show-password">
+              <label>
+                <input
+                  type="checkbox"
+                  checked={verSenha}
+                  onChange={() => setVerSenha(!verSenha)}
+                />
+                Mostrar senha
+              </label>
+            </div>
+
+            <div className="login-extras">
+              <label>
+                <input type="checkbox" />
+                Lembrar credenciais
+              </label>
+              <a href="#" className="link-esqueci">Esqueceu sua senha?</a>
             </div>
 
             {erro && <div className="login-erro">{erro}</div>}
 
-            <div className="login-extras">
-              <label>
-                <input
-                  type="checkbox"
-                  checked={lembrar}
-                  onChange={e => setLembrar(e.target.checked)}
-                />
-                Lembrar credenciais
-              </label>
-              <a href="#" className="link-esqueci">
-                Esqueceu sua senha?
-              </a>
-            </div>
-
-            <button type="submit" className="login-btn">
-              ENTRAR
-            </button>
+            <button type="submit" className="login-btn">ENTRAR</button>
           </form>
 
+          {/* link de cadastro escondido via CSS */}
           <div className="login-cadastro">
-            Ainda não tem conta? <a href="#">Inscrever-se</a>
+            <a href="#">Ainda não tem conta? Inscrever-se</a>
           </div>
         </div>
       </div>
