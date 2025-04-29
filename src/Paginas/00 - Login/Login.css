@@ -1,78 +1,84 @@
-* { box-sizing: border-box; }
-
-.login-page {
+/* Container principal: bg à esquerda e form à direita */
+.login-container {
   display: flex;
   height: 100vh;
-  font-family: 'Inter', sans-serif;
-}
-
-/* === painel de imagem === */
-.login-left {
-  width: 60%;
-  position: relative;
   overflow: hidden;
 }
-.login-fundo {
+
+/* Slider ocupa 70% */
+.login-container__bg {
+  position: relative;
+  flex: 7;
+  overflow: hidden;
+}
+
+/* Cada imagem */
+.login-bg__img {
   position: absolute;
-  inset: 0;
+  top: 0; left: 0;
   width: 100%; height: 100%;
   object-fit: cover;
   opacity: 0;
   transition: opacity 1s ease-in-out;
 }
-.login-fundo.ativo {
+
+/* Imagem ativa */
+.login-bg__img.active {
   opacity: 1;
 }
 
-/* === painel de formulário === */
-.login-right {
-  width: 40%;
-  background: #fff;
+/* Form ocupa 30% */
+.login-form {
+  flex: 3;
+  background: rgba(255,255,255,0.85);
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  padding: 2rem 1rem;
+  box-shadow: -4px 0 12px rgba(0,0,0,0.1);
+  overflow-y: auto;
 }
-.login-box {
-  width: 100%;
-  max-width: 360px;
-  padding: 2rem;
-  background: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 12px 32px rgba(0,0,0,0.12);
-  text-align: center;
-}
-.login-logo {
-  width: 100px;
+
+/* Logo e título */
+.login-form__logo {
+  width: 72px;
   margin-bottom: 1rem;
 }
-.login-box h1 {
-  margin-bottom: 1.5rem;
-  font-size: 1.6rem;
+.login-form__title {
+  margin-bottom: 2rem;
+  font-size: 1.5rem;
   color: #333;
 }
-.form-group {
-  margin-bottom: 1rem;
-  text-align: left;
-}
-.form-group label {
-  display: block;
-  margin-bottom: 0.4rem;
+
+/* Labels */
+.login-form__label {
+  align-self: flex-start;
+  margin: 0.5rem 0 0.25rem;
   font-size: 0.9rem;
   color: #555;
 }
-.form-group input {
+
+/* Inputs */
+.login-form__input {
   width: 100%;
-  padding: 0.65rem 0.75rem;
+  padding: 0.75rem 1rem;
   font-size: 1rem;
-  border: 1px solid #ccd0d5;
-  border-radius: 4px;
+  background: #EBF5FF;
+  border: 1px solid #CCDDEB;
+  border-radius: 8px;
+  outline: none;
+  box-sizing: border-box;
 }
-.senha-group {
+
+/* Container senha */
+.login-form__senha-container {
   position: relative;
+  width: 100%;
 }
-.ver-senha-btn {
+.login-form__showpass {
   position: absolute;
-  top: 50%; right: 0.75rem;
+  right: 1rem;
+  top: 50%;
   transform: translateY(-50%);
   background: none;
   border: none;
@@ -80,49 +86,61 @@
   cursor: pointer;
 }
 
-/* extras: lembrar + link */
-.extras {
+/* Extras: lembrar + link */
+.login-form__extras {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  width: 100%;
+  margin: 0.75rem 0 1rem;
   font-size: 0.9rem;
+  color: #555;
 }
-.checkbox-label {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
+.login-form__extras input {
+  margin-right: 0.5rem;
 }
-.checkbox-label input {
-  margin-right: 0.4rem;
-}
-.link-esqueci {
-  color: #0066cc;
+.login-form__link {
+  color: #0066CC;
   text-decoration: none;
 }
-.link-esqueci:hover {
+.login-form__link:hover {
   text-decoration: underline;
 }
 
-/* erro */
-.erro {
-  color: #c00;
+/* Erro */
+.login-form__error {
+  width: 100%;
+  color: #C00;
   font-size: 0.9rem;
   margin-bottom: 1rem;
-  text-align: left;
 }
 
-/* botão principal */
-.login-btn {
+/* Botão de login */
+.login-form__btn {
   width: 100%;
   padding: 0.75rem;
-  background: #0066cc;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
   font-size: 1rem;
+  background: #0066CC;
+  color: #FFF;
+  border: none;
+  border-radius: 8px;
   cursor: pointer;
+  margin-top: 0.5rem;
 }
-.login-btn:hover {
-  background: #005bb5;
+.login-form__btn:hover {
+  background: #005BB5;
+}
+
+/* Link de inscrição */
+.login-form__signup {
+  margin-top: 1.25rem;
+  font-size: 0.9rem;
+  color: #777;
+}
+.login-form__signup a {
+  color: #0066CC;
+  text-decoration: none;
+}
+.login-form__signup a:hover {
+  text-decoration: underline;
 }

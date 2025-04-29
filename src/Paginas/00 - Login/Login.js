@@ -1,101 +1,119 @@
 import React, { useState, useEffect } from 'react';
 import './Login.css';
-import logo from '../../Imagens/logo.jpg';
 import fundo1 from '../../Imagens/1.jpg';
 import fundo2 from '../../Imagens/2.jpg';
 import fundo3 from '../../Imagens/3.jpg';
+import logo from '../../Imagens/logo.png';
 
 export default function Login({ onLoginSuccess }) {
-  const [nome, setNome] = useState('');
+  const [usuario, setUsuario] = useState('');
   const [senha, setSenha] = useState('');
-  const [erro, setErro] = useState('');
   const [verSenha, setVerSenha] = useState(false);
-  const [fundoIndex, setFundoIndex] = useState(0);
+  const [erro, setErro] = useState('');
+  const [lembrar, setLembrar] = useState(false);
+  const [slideIndex, setSlideIndex] = useState(0);
 
   const fundos = [fundo1, fundo2, fundo3];
 
+  // Avança o slide a cada 4s
   useEffect(() => {
-    const interval = setInterval(
-      () => setFundoIndex(i => (i + 1) % fundos.length),
-      4000
-    );
-    return () => clearInterval(interval);
+    const iv = setInterval(() => {
+      setSlideIndex(i => (i + 1) % fundos.length);
+    }, 4000);
+    return () => clearInterval(iv);
   }, []);
 
-  const handleLogin = async e => {
+  const handleSubmit = async e => {
     e.preventDefault();
     try {
-      const res = await fetch('https://sistema-v1-backend.onrender.com/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nome, senha })
-      });
+      const res = await fetch(
+        'https://sistema-v1-backend.onrender.com/login',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nome: usuario, senha })
+        }
+      );
       const data = await res.json();
-      if (data.message) setErro(data.message);
-      else onLoginSuccess(data);
+      if (res.ok) {
+        setErro('');
+        if (lembrar) localStorage.setItem('usuarioLogado', JSON.stringify(data));
+        onLoginSuccess(data);
+      } else {
+        setErro(data.message);
+      }
     } catch {
       setErro('Erro no servidor.');
     }
   };
 
   return (
-    <div className="login-page">
-      <div className="login-left">
+    <div className="login-container">
+      <div className="login-container__bg">
         {fundos.map((img, i) => (
           <img
             key={i}
             src={img}
-            className={`login-fundo ${fundoIndex === i ? 'ativo' : ''}`}
             alt={`fundo ${i}`}
+            className={`login-bg__img ${slideIndex === i ? 'active' : ''}`}
           />
         ))}
       </div>
-      <div className="login-right">
-        <div className="login-box">
-          <img src={logo} alt="Logo" className="login-logo" />
-          <h1>Grupo Simemp Neoconstec</h1>
-          <form onSubmit={handleLogin}>
-            <div className="form-group">
-              <label>Usuário ou Email</label>
-              <input
-                type="text"
-                value={nome}
-                onChange={e => setNome(e.target.value)}
-                required
-              />
-            </div>
-            <div className="form-group senha-group">
-              <label>Senha</label>
-              <input
-                type={verSenha ? 'text' : 'password'}
-                value={senha}
-                onChange={e => setSenha(e.target.value)}
-                required
-              />
-              <button
-                type="button"
-                className="ver-senha-btn"
-                onClick={() => setVerSenha(v => !v)}
-                aria-label="Mostrar senha"
-              >
-                {verSenha ? '🙈' : '👁️'}
-              </button>
-            </div>
-            <div className="extras">
-              <label className="checkbox-label">
-                <input
-                  type="checkbox"
-                  onChange={() => {}}
-                />
-                Lembrar credenciais
-              </label>
-              <a href="#" className="link-esqueci">Esqueceu sua senha?</a>
-            </div>
-            {erro && <div className="erro">{erro}</div>}
-            <button type="submit" className="login-btn">ENTRAR</button>
-          </form>
+      <form className="login-form" onSubmit={handleSubmit}>
+        <img src={logo} alt="Logo" className="login-form__logo" />
+        <h1 className="login-form__title">Bem-vindo(a)</h1>
+
+        <label className="login-form__label">Usuário</label>
+        <input
+          className="login-form__input"
+          type="text"
+          value={usuario}
+          onChange={e => setUsuario(e.target.value)}
+          placeholder="Digite seu usuário"
+          required
+        />
+
+        <label className="login-form__label">Senha</label>
+        <div className="login-form__senha-container">
+          <input
+            className="login-form__input"
+            type={verSenha ? 'text' : 'password'}
+            value={senha}
+            onChange={e => setSenha(e.target.value)}
+            placeholder="••••••••"
+            required
+          />
+          <button
+            type="button"
+            className="login-form__showpass"
+            onClick={() => setVerSenha(v => !v)}
+          >
+            {verSenha ? '🙈' : '👁️'}
+          </button>
         </div>
-      </div>
+
+        <div className="login-form__extras">
+          <label>
+            <input
+              type="checkbox"
+              checked={lembrar}
+              onChange={e => setLembrar(e.target.checked)}
+            />
+            Lembrar credenciais
+          </label>
+          <a href="#" className="login-form__link">Esqueceu sua senha?</a>
+        </div>
+
+        {erro && <div className="login-form__error">{erro}</div>}
+
+        <button className="login-form__btn" type="submit">
+          ENTRAR
+        </button>
+
+        <div className="login-form__signup">
+          Ainda não tem conta? <a href="#">Inscrever-se</a>
+        </div>
+      </form>
     </div>
   );
 }
