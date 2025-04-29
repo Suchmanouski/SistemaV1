@@ -15,7 +15,6 @@ export default function Login({ onLoginSuccess }) {
 
   const fundos = [fundo1, fundo2, fundo3];
 
-  // Avança o slide a cada 4s
   useEffect(() => {
     const iv = setInterval(() => {
       setSlideIndex(i => (i + 1) % fundos.length);
@@ -37,7 +36,8 @@ export default function Login({ onLoginSuccess }) {
       const data = await res.json();
       if (res.ok) {
         setErro('');
-        if (lembrar) localStorage.setItem('usuarioLogado', JSON.stringify(data));
+        if (lembrar) 
+          localStorage.setItem('usuarioLogado', JSON.stringify(data));
         onLoginSuccess(data);
       } else {
         setErro(data.message);
@@ -49,71 +49,78 @@ export default function Login({ onLoginSuccess }) {
 
   return (
     <div className="login-container">
-      <div className="login-container__bg">
+      <div className="login-bg">
         {fundos.map((img, i) => (
           <img
             key={i}
             src={img}
-            alt={`fundo ${i}`}
-            className={`login-bg__img ${slideIndex === i ? 'active' : ''}`}
+            alt=""
+            className={`login-bg__img ${
+              slideIndex === i ? 'active' : ''
+            }`}
           />
         ))}
       </div>
-      <form className="login-form" onSubmit={handleSubmit}>
-        <img src={logo} alt="Logo" className="login-form__logo" />
-        <h1 className="login-form__title">Bem-vindo(a)</h1>
+      <div className="login-panel">
+        <form className="login-form" onSubmit={handleSubmit}>
+          <img src={logo} alt="Logo" className="login-logo" />
+          <h1 className="login-title">Bem-vindo(a)</h1>
 
-        <label className="login-form__label">Usuário</label>
-        <input
-          className="login-form__input"
-          type="text"
-          value={usuario}
-          onChange={e => setUsuario(e.target.value)}
-          placeholder="Digite seu usuário"
-          required
-        />
-
-        <label className="login-form__label">Senha</label>
-        <div className="login-form__senha-container">
+          <label className="login-label">Usuário</label>
           <input
-            className="login-form__input"
-            type={verSenha ? 'text' : 'password'}
-            value={senha}
-            onChange={e => setSenha(e.target.value)}
-            placeholder="••••••••"
+            className="login-input"
+            type="text"
+            value={usuario}
+            onChange={e => setUsuario(e.target.value)}
+            placeholder="Digite seu usuário"
             required
           />
-          <button
-            type="button"
-            className="login-form__showpass"
-            onClick={() => setVerSenha(v => !v)}
-          >
-            {verSenha ? '🙈' : '👁️'}
-          </button>
-        </div>
 
-        <div className="login-form__extras">
-          <label>
+          <label className="login-label">Senha</label>
+          <div className="login-input--senha">
             <input
-              type="checkbox"
-              checked={lembrar}
-              onChange={e => setLembrar(e.target.checked)}
+              className="login-input login-input--has-icon"
+              type={verSenha ? 'text' : 'password'}
+              value={senha}
+              onChange={e => setSenha(e.target.value)}
+              placeholder="••••••••"
+              required
             />
-            Lembrar credenciais
-          </label>
-          <a href="#" className="login-form__link">Esqueceu sua senha?</a>
-        </div>
+            <svg
+              onClick={() => setVerSenha(v => !v)}
+              className="login-icon eye-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+            >
+              {verSenha ? (
+                <path d="M12 5c7 0 11 7 11 7s-4 7-11 7S1 12 1 12s4-7 11-7zm0 2a5 5 0 100 10 5 5 0 000-10z" />
+              ) : (
+                <path d="M12 9a3 3 0 110 6 3 3 0 010-6zm0-4C7 5 3 9 3 9s4 4 9 4 9-4 9-4-4-4-9-4z" />
+              )}
+            </svg>
+          </div>
 
-        {erro && <div className="login-form__error">{erro}</div>}
+          <div className="login-extras">
+            <label>
+              <input
+                type="checkbox"
+                checked={lembrar}
+                onChange={e => setLembrar(e.target.checked)}
+              />
+              Lembrar credenciais
+            </label>
+            <a href="#" className="login-forgot">
+              Esqueceu sua senha?
+            </a>
+          </div>
 
-        <button className="login-form__btn" type="submit">
-          ENTRAR
-        </button>
+          {erro && <div className="login-error">{erro}</div>}
 
-        <div className="login-form__signup">
-          Ainda não tem conta? <a href="#">Inscrever-se</a>
-        </div>
-      </form>
+          <button type="submit" className="login-btn">
+            ENTRAR
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
