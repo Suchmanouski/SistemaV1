@@ -21,6 +21,7 @@
   object-fit: cover;
   opacity: 0;
   transition: opacity 1s ease-in-out;
+  filter: brightness(1.2);   /* clareia as imagens */
 }
 .login-bg__img.active {
   opacity: 1;
@@ -32,7 +33,7 @@
   top: 0;
   bottom: 0;
   left: 0;         /* para ficar à esquerda; troque para right: 0 se quiser à direita */
-  width: 30%;
+  width: 35%;
   z-index: 1;
   display: flex;
   align-items: center;
