@@ -3,23 +3,19 @@
   position: relative;
   width: 100%;
   height: 100vh;
-  display: flex;
   overflow: hidden;
 }
 
-/* slider 70% */
+/* slider full-screen */
 .login-bg {
-  /* mantém 70% do espaço */
-  flex: 7;
-  position: relative;
+  position: absolute;
+  inset: 0;        /* top/right/bottom/left = 0 */
   z-index: 0;
   overflow: hidden;
 }
-
-/* cada imagem do slider cobre todo o .login-bg */
 .login-bg__img {
   position: absolute;
-  inset: 0;          /* top/right/bottom/left = 0 */
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -30,16 +26,18 @@
   opacity: 1;
 }
 
-/* painel branco 30% */
+/* painel de login 30% */
 .login-panel {
-  /* fixa 30% do espaço */
-  flex: 0 0 30%;
-  position: relative;
-  z-index: 1;  
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;               /* troque para right: 0 se quiser painel à direita */
+  width: 30%;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.85);
 }
 
 /* form centralizado e limitado */
@@ -52,7 +50,7 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* logo maior */
+/* logo */
 .login-logo {
   display: block;
   margin: 0 auto 1rem;
