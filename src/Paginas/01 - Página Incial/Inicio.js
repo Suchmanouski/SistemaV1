@@ -16,8 +16,10 @@ export default function Pagina01({ usuarioLogado, onLogout }) {
   });
 
   useEffect(() => {
+    console.log('Página atual:', paginaAtual);
     localStorage.setItem('paginaAtual', paginaAtual);
   }, [paginaAtual]);
+  
 
   return (
     <div className="dashboard-wrapper">
