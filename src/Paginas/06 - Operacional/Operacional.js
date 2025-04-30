@@ -1,11 +1,11 @@
 import React from 'react';
-import './Operacional.css';  // opcional — pode até comentar pra testar
+import './Operacional.css'; // Crie este arquivo, mesmo que vazio
 
-export default function Operacional(){
+export default function Operacional() {
   return (
-    <div style={{ padding: '2rem' }}>
+    <div className="operacional-container">
       <h2>Área Operacional</h2>
-      <p>Conteúdo de teste</p>
+      <p>Conteúdo de teste aqui.</p>
     </div>
   );
 }

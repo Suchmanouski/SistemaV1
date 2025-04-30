@@ -1,4 +1,11 @@
-// Operacional.jsx
 import React from 'react';
 import './Comercial.css';
-export default () => <h2>Área Operacional</h2>;
+
+export default function Comercial() {
+  return (
+    <div className="comercial-container">
+      <h2>Área Comercial</h2>
+      <p>Conteúdo de teste aqui.</p>
+    </div>
+  );
+}
