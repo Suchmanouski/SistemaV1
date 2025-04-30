@@ -24,7 +24,7 @@
   
   opacity: 0;
   transition: opacity 1s ease-in-out;
-  filter: brightness(1.2); /* se você ainda quiser clarear */
+  ; /* se você ainda quiser clarear */
 }
 .login-bg__img.active {
   opacity: 1;
