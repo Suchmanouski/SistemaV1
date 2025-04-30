@@ -15,13 +15,19 @@
 }
 .login-bg__img {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  /* em vez de inset: 0; */
+  top: 50%;
+  left: 50%;
+  width: 65%;       /* <- aqui */
+  height: auto;     /* mantém proporção */
   object-fit: cover;
+  
+  /* centraliza a imagem encolhida */
+  transform: translate(-50%, -50%);
+  
   opacity: 0;
   transition: opacity 1s ease-in-out;
-  filter: brightness(1.2);   /* clareia as imagens */
+  filter: brightness(1.2); /* se quiser continuar mais clara */
 }
 .login-bg__img.active {
   opacity: 1;
