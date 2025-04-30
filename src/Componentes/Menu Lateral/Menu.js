@@ -8,28 +8,28 @@ export default function MenuLateral({ paginaAtual, setPaginaAtual, usuarioLogado
         className={`menu-item ${paginaAtual === 'inicio' ? 'active' : ''}`}
         onClick={() => setPaginaAtual('inicio')}
       >
-        Início
+        01 - Início
       </button>
 
       <button
         className={`menu-item ${paginaAtual === 'contratos' ? 'active' : ''}`}
         onClick={() => setPaginaAtual('contratos')}
       >
-        Contratos
+        03 - Contratos
       </button>
 
       <button
         className={`menu-item ${paginaAtual === 'valores' ? 'active' : ''}`}
         onClick={() => setPaginaAtual('valores')}
       >
-        Previsões
+        04 - Previsões
       </button>
 
       <button
         className={`menu-item ${paginaAtual === 'analise' ? 'active' : ''}`}
         onClick={() => setPaginaAtual('analise')}
       >
-        Análise de Custos
+        05 - Análise de Custos
       </button>
 
       {/* Novas seções */}
@@ -37,14 +37,14 @@ export default function MenuLateral({ paginaAtual, setPaginaAtual, usuarioLogado
         className={`menu-item ${paginaAtual === 'operacional' ? 'active' : ''}`}
         onClick={() => setPaginaAtual('operacional')}
       >
-        Operacional
+        06 - Operacional
       </button>
 
       <button
         className={`menu-item ${paginaAtual === 'comercial' ? 'active' : ''}`}
         onClick={() => setPaginaAtual('comercial')}
       >
-        Comercial
+        07 - Comercial
       </button>
 
       {/* Logout */}
