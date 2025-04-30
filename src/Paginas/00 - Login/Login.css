@@ -14,17 +14,17 @@
   overflow: hidden;
 }
 .login-bg__img {
-    position: absolute;
-    top: 50%;
-    right: 0;          /* gruda à direita */
-    left: auto;        /* anula o left */
-    width: 65%;
-    height: auto;
-    object-fit: cover;
-    transform: translateY(-50%);  /* só move verticalmente */
-    opacity: 0;
-    transition: opacity 1s ease-in-out;
-    filter: brightness(1.2);
+  position: absolute;
+  top: 0;
+  right: 0;               /* cola a caixa da imagem na direita */
+  width: 65vw;            /* 65% da largura da viewport */
+  height: 100vh;          /* 100% da altura da viewport */
+  object-fit: cover;      /* preenche todo o box, cortando o que sair do frame */
+  object-position: center right; /* foca a parte central/direita da imagem */
+  
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+  filter: brightness(1.2); /* se você ainda quiser clarear */
 }
 .login-bg__img.active {
   opacity: 1;
