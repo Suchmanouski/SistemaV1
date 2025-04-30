@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400&display=swap');
 
-.sidebar, .menu-lateral {
+.sidebar {
   width: 240px;
   background: linear-gradient(to bottom, #26425a, #2c70a0);
   padding: 32px 20px;
@@ -30,7 +30,7 @@
   letter-spacing: 0.5px;
 }
 
-.menu, .menu-lateral {
+.menu {
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -48,16 +48,14 @@
 .menu-divider {
   height: 1px;
   background-color: rgba(255, 255, 255, 0.2);
-  margin: 1px 0;
+  margin: 1px 0 1px;
   border: none;
   width: 60%;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
 }
 
 .menu-item {
-  font-family: 'Inter', sans-serif;
   font-size: 13px;
-  font-weight: 300;
   padding: 10px 16px;
   border-radius: 8px;
   background: none;
@@ -66,6 +64,7 @@
   cursor: pointer;
   transition: background 0.2s ease;
   text-align: left;
+  font-weight: 300;
 }
 
 .menu-item:hover {
@@ -89,12 +88,13 @@
   background-color: #ffffff;
 }
 
-.user-area, .menu-item.logout {
+.user-area {
   margin-top: auto;
+  text-align: center;
+  padding-top: 20px;
 }
 
-.user-area button,
-.menu-item.logout {
+.user-area button {
   background: rgba(255, 255, 255, 0.15);
   color: #ffffff;
   font-size: 13px;
@@ -104,7 +104,6 @@
   cursor: pointer;
 }
 
-.user-area button:hover,
-.menu-item.logout:hover {
+.user-area button:hover {
   background: rgba(255, 255, 255, 0.25);
 }
