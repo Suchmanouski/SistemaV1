@@ -47,4 +47,3 @@ export default function Pagina01({ usuarioLogado, onLogout }) {
     </div>
   );
 }
-export default Pagina01;
