@@ -4,39 +4,45 @@ import './Menu.css';
 export default function MenuLateral({ paginaAtual, setPaginaAtual, usuarioLogado, onLogout }) {
   return (
     <nav className="sidebar">
+      {/* Logo e boas-vindas (se necessário) */}
+      <div className="logo-area">
+        <img src="../../Imagens/logo2.png" alt="Logo" className="logo" />
+      </div>
+      <div className="boas-vindas">Bem-vindo(a), {usuarioLogado.nome}</div>
+
+      {/* Itens do menu */}
       <div className="menu">
         <button
           className={`menu-item ${paginaAtual === 'inicio' ? 'active' : ''}`}
           onClick={() => setPaginaAtual('inicio')}
         >
-        Início
+          Início
         </button>
         <button
           className={`menu-item ${paginaAtual === 'contratos' ? 'active' : ''}`}
           onClick={() => setPaginaAtual('contratos')}
         >
-        Contratos
+         Contratos
         </button>
         <button
           className={`menu-item ${paginaAtual === 'valores' ? 'active' : ''}`}
           onClick={() => setPaginaAtual('valores')}
         >
-        Previsões
+           Previsões
         </button>
         <button
           className={`menu-item ${paginaAtual === 'analise' ? 'active' : ''}`}
           onClick={() => setPaginaAtual('analise')}
         >
-        Análise de Custos
+         Análise de Custos
         </button>
 
-        <div className="menu-section">Módulos</div>
-
+        {/* Novos botões */}
         <button
           className={`menu-item ${paginaAtual === 'operacional' ? 'active' : ''}`}
           onClick={() => setPaginaAtual('operacional')}
         >
-        Operacional
+     Operacional
         </button>
         <button
           className={`menu-item ${paginaAtual === 'comercial' ? 'active' : ''}`}
@@ -46,6 +52,7 @@ export default function MenuLateral({ paginaAtual, setPaginaAtual, usuarioLogado
         </button>
       </div>
 
+      {/* Logout */}
       <div className="user-area">
         <button className="menu-item logout" onClick={onLogout}>
           Sair
