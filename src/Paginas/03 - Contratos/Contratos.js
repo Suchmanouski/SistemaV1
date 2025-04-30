@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Contratos.css';
+import MapaBrasil from '../../Componentes/MapaBrasil/MapaBrasil';
 
 function Contratos() {
   const [contratos, setContratos] = useState([]);
@@ -51,7 +52,7 @@ function Contratos() {
     const payload = {
       ...formulario,
       dataInicio: formatarData(formulario.dataInicio),
-      dataFim:    formatarData(formulario.dataFim),
+      dataFim: formatarData(formulario.dataFim),
       valorInicial: formatarValor(formulario.valorInicial)
     };
     fetch(`${API_BASE}/api/contratos`, {
@@ -119,23 +120,26 @@ function Contratos() {
 
   // Filtra conforme tipo de usuário
   const contratosFiltrados = contratos.filter(ctr => {
-    const passaBusca  = ctr.numero.toLowerCase().includes(busca.toLowerCase());
-    // admin/financeiro ve tudo, coordenador só seu contrato
+    const passaBusca = ctr.numero.toLowerCase().includes(busca.toLowerCase());
     if (usuarioLogado.tipo_usuario === 'coordenador') {
       return ctr.numero.toString() === usuarioLogado.contrato.toString() && passaBusca;
     }
-    if (['admin','financeiro'].includes(usuarioLogado.tipo_usuario)) {
+    if (['admin', 'financeiro'].includes(usuarioLogado.tipo_usuario)) {
       return passaBusca;
     }
     return false;
   });
+
+  // Callback para seleção no mapa (opcional: filtrar por estado)
+  const handleEstadoSelecionado = uf => {
+    setBusca(uf);
+  };
 
   return (
     <div className="pagina-contratos">
       <div className="barra-contratos-v2">
         <div className="titulo-contratos">Contratos</div>
         <div className="acoes-contratos">
-          {/* Busca só para coordenador */}
           {usuarioLogado.tipo_usuario === 'coordenador' && (
             <input
               type="text"
@@ -145,7 +149,6 @@ function Contratos() {
               onChange={e => setBusca(e.target.value)}
             />
           )}
-          {/* Novo contrato só para admin */}
           {perfisQuePodemGerenciar.includes(usuarioLogado.tipo_usuario) && (
             <button
               className="btn-novo-contrato"
@@ -162,6 +165,15 @@ function Contratos() {
       )}
 
       <div className="conteudo-contratos">
+        {/* Mapa de contratos */}
+        <div className="contratos-mapa">
+          <h3>Mapa de Contratos por Estado</h3>
+          <MapaBrasil
+            contratos={contratosFiltrados}
+            onEstadoSelecionado={handleEstadoSelecionado}
+          />
+        </div>
+
         <div className="lista-contratos">
           {contratosFiltrados.map(ctr => (
             <div className="contrato-card" key={ctr.id}>
@@ -173,7 +185,6 @@ function Contratos() {
                 <button onClick={() => setContratoSelecionado(ctr)}>
                   Visualizar
                 </button>
-                {/* Excluir só para admin */}
                 {perfisQuePodemGerenciar.includes(usuarioLogado.tipo_usuario) && (
                   <button
                     className="btn-excluir"
@@ -188,7 +199,6 @@ function Contratos() {
         </div>
       </div>
 
-      {/* Modal Visualizar */}
       {contratoSelecionado && (
         <div className="modal-overlay" onClick={() => setContratoSelecionado(null)}>
           <div className="modal-contrato" onClick={e => e.stopPropagation()}>
@@ -205,7 +215,6 @@ function Contratos() {
         </div>
       )}
 
-      {/* Modal Novo Contrato */}
       {formularioAberto && (
         <div className="modal-overlay" onClick={cancelarFormulario}>
           <div className="modal-contrato" onClick={e => e.stopPropagation()}>
